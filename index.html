@@ -1,89 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kukoro Dungeon Raid Tool</title>
+<meta charset="UTF-8">
+<title>Kukoro Dungeon Raid Tool</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0e0e10;
-      color: white;
-    }
+<style>
+  * { box-sizing: border-box; }
 
-    header {
-      padding: 10px;
-      background: #18181b;
-      text-align: center;
-      font-weight: bold;
-    }
+  body {
+    margin: 0;
+    background: #d4d4d4;
+    font-family: Georgia, 'Times New Roman', serif;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+  }
 
-    .controls {
-      display: flex;
-      gap: 10px;
-      padding: 10px;
-      background: #1f1f23;
-    }
+  .app {
+    width: 1000px;
+    background: #fff;
+    border: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+  }
 
-    input {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-    }
+  .title-bar {
+    border-bottom: 1px solid #444;
+    padding: 14px 0;
+    text-align: center;
+  }
 
-    button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 6px;
-      background: #9146ff;
-      color: white;
-      cursor: pointer;
-    }
+  .title-bar h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: bold;
+  }
 
-    button:hover {
-      background: #7a3dd6;
-    }
+  .main-area {
+    display: flex;
+    border-bottom: 1px solid #444;
+  }
 
-    #chat {
-      height: calc(100vh - 110px);
-      overflow-y: auto;
-      padding: 10px;
-      font-size: 14px;
-    }
+  .sidebar {
+    width: 260px;
+    border-right: 1px solid #444;
+    padding: 14px 18px;
+  }
 
-    .msg {
-      margin-bottom: 6px;
-      padding: 6px;
-      border-bottom: 1px solid #2a2a2a;
-    }
+  .content {
+    flex: 1;
+    padding: 14px;
+  }
 
-    .name {
-      color: #9146ff;
-      font-weight: bold;
-    }
+  .field-label {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
 
-    .tag {
-      color: #00ff99;
-      font-weight: bold;
-    }
-  </style>
+  .field-value {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #666;
+    margin: 10px 0 16px 0;
+  }
+
+  button {
+    display: block;
+    width: 160px;
+    margin: 0 auto 6px auto;
+    padding: 6px 0;
+    background: #e6e6e6;
+    border: 1px solid #888;
+    font-family: Georgia, serif;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #d8d8d8;
+  }
+
+  button.link-style {
+    color: #1a4fa0;
+  }
+
+  textarea {
+    display: block;
+    width: 100%;
+    height: 90px;
+    margin-bottom: 14px;
+    font-family: Georgia, serif;
+    font-size: 13px;
+    resize: vertical;
+    border: 1px solid #444;
+  }
+
+  .chat {
+    height: 720px;
+    overflow-y: auto;
+    border: 1px solid #444;
+    padding: 10px;
+    font-size: 14px;
+    background: #fff;
+  }
+
+  .msg {
+    margin-bottom: 6px;
+    padding: 4px 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .tag {
+    color: #00a86b;
+    font-weight: bold;
+  }
+
+  .name {
+    color: #1a4fa0;
+    font-weight: bold;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 12px 0;
+    font-size: 14px;
+  }
+
+  .footer a {
+    color: #1a4fa0;
+  }
+</style>
 </head>
 
 <body>
 
-<header>
-  🧙 Kukoro Dungeon Raid Tool
-</header>
+<div class="app">
 
-<div class="controls">
-  <input id="channelInput" placeholder="Enter Twitch channel (e.g. ninja)" />
-  <button onclick="connect()">Connect</button>
+  <div class="title-bar">
+    <h1>Kukoro Dungeon Raid Player Data Tool</h1>
+  </div>
+
+  <div class="main-area">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <div class="field-label">Twitch Channel:</div>
+      <textarea id="channelInput" placeholder="Enter channel name..."></textarea>
+
+      <button onclick="connect()">Connect Chat</button>
+
+      <hr>
+
+      <div class="field-label">Player Data:</div>
+
+      <textarea placeholder="Place player data here..."></textarea>
+
+      <button>Add Players</button>
+
+      <hr>
+
+      <button>Reset</button>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+
+      <div id="chat" class="chat"></div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+    See "<a href="#">Read Me</a>" for Copyright & Permissions.
+  </div>
+
 </div>
-
-<div id="chat"></div>
 
 <script>
 let ws;
@@ -114,7 +213,6 @@ function connect() {
       const username = userMatch ? userMatch[1] : "Unknown";
       const text = textMatch ? textMatch[1] : "";
 
-      // FIX: robust KUKORO message parsing (handles hidden IRC chars)
       const cleanedText = text.replace(/\u0001/g, "").trim();
 
       if (cleanedText.includes("[KUKORO]")) {
@@ -128,7 +226,7 @@ function connect() {
 
         div.innerHTML = `
           <span class="tag">[KUKORO]</span>
-          <span class="name">${username}</span>: ${cleaned}
+          <span class="name"> ${username}</span>: ${cleaned}
         `;
 
         chatBox.appendChild(div);
@@ -137,10 +235,6 @@ function connect() {
     }
   };
 }
-
-document.getElementById("channelInput").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") connect();
-});
 </script>
 
 </body>
