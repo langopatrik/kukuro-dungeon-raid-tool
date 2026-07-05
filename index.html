@@ -114,7 +114,7 @@ function connect() {
       const username = userMatch ? userMatch[1] : "Unknown";
       const text = textMatch ? textMatch[1] : "";
 
-      // ✅ FILTER: only show messages starting with [KUKORO]
+      //FILTER: only show messages starting with [KUKORO]
       if (text.startsWith("[KUKORO]")) {
 
         const cleaned = text.replace("[KUKORO]", "").trim();
