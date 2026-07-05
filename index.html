@@ -64,13 +64,18 @@
       color: #9146ff;
       font-weight: bold;
     }
+
+    .tag {
+      color: #00ff99;
+      font-weight: bold;
+    }
   </style>
 </head>
 
 <body>
 
 <header>
-  🧙 Kukoro Dungeon Raid Tool (Text Chat Mode)
+  🧙 Kukoro Dungeon Raid Tool (Filtered Chat Mode)
 </header>
 
 <div class="controls">
@@ -90,7 +95,6 @@ function connect() {
   const chatBox = document.getElementById("chat");
   chatBox.innerHTML = "";
 
-  // Twitch IRC WebSocket (anonymous read-only mode)
   ws = new WebSocket("wss://irc-ws.chat.twitch.tv:443");
 
   ws.onopen = () => {
@@ -103,31 +107,30 @@ function connect() {
     const msg = event.data;
 
     if (msg.includes("PRIVMSG")) {
-      const parts = msg.split(";");
-      let username = "";
-      let text = "";
 
-      // extract username
       const userMatch = msg.match(/display-name=([^;]+)/);
-      if (userMatch) username = userMatch[1];
-
-      // extract message text
       const textMatch = msg.match(/PRIVMSG #[^ ]+ :(.*)/);
-      if (textMatch) text = textMatch[1];
 
-      if (text) {
+      const username = userMatch ? userMatch[1] : "Unknown";
+      const text = textMatch ? textMatch[1] : "";
+
+      // ✅ FILTER: only show messages starting with [KUKORO]
+      if (text.startsWith("[KUKORO]")) {
+
+        const cleaned = text.replace("[KUKORO]", "").trim();
+
         const div = document.createElement("div");
         div.className = "msg";
-        div.innerHTML = `<span class="name">${username}</span>: ${text}`;
-        chatBox.appendChild(div);
 
+        div.innerHTML = `
+          <span class="tag">[KUKORO]</span>
+          <span class="name"> ${username}</span>: ${cleaned}
+        `;
+
+        chatBox.appendChild(div);
         chatBox.scrollTop = chatBox.scrollHeight;
       }
     }
-  };
-
-  ws.onclose = () => {
-    console.log("Disconnected");
   };
 }
 
