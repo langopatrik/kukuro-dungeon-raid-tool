@@ -372,6 +372,30 @@
     color: var(--text-dim);
   }
 
+  .sort-header {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s ease;
+  }
+
+  .sort-header:hover {
+    color: var(--text);
+  }
+
+  .sort-header.active {
+    color: var(--accent);
+  }
+
+  .sort-arrow {
+    font-size: 9px;
+    line-height: 1;
+    width: 8px;
+    display: inline-block;
+  }
+
   .player-row {
     background: var(--panel-2);
     border: 1px solid var(--border);
@@ -529,11 +553,6 @@
       </div>
 
       <div class="section">
-        <div class="field-label">Sort by <span class="value">Name</span></div>
-        <button onclick="sortBy('name')">Level</button>
-      </div>
-
-      <div class="section">
         <div class="field-label">Player Data</div>
         <textarea id="playerDataInput" placeholder="Paste raid messages (or plain names), one per line..."></textarea>
         <button class="ghost" style="background:rgba(124,92,255,0.1)" onclick="addPlayersFromTextarea()">Add Players</button>
@@ -563,11 +582,11 @@
 
       <div id="boardPanel" class="panel">
         <div class="board-header">
-          <div>Player</div>
-          <div>Level</div>
+          <div class="sort-header" id="sortHeader-name" onclick="toggleSort('name')">Player<span class="sort-arrow"></span></div>
+          <div class="sort-header" id="sortHeader-level" onclick="toggleSort('level')">Level<span class="sort-arrow"></span></div>
           <div>Stats</div>
-          <div>Role</div>
-          <div>Focus</div>
+          <div class="sort-header" id="sortHeader-role" onclick="toggleSort('role')">Role<span class="sort-arrow"></span></div>
+          <div class="sort-header" id="sortHeader-focus" onclick="toggleSort('focus')">Focus<span class="sort-arrow"></span></div>
           <div>Skills</div>
         </div>
         <div id="board" class="board"></div>
@@ -617,6 +636,7 @@
 let ws;
 let manualDisconnect = false;
 let participants = new Map(); // name -> { stats, role, skills }
+let sortMode = "name-asc";
 
 /* ORIGINAL CHAT LOGIC (UNCHANGED) */
 function connect() {
@@ -927,8 +947,38 @@ function addPlayerManually() {
 function renderBoard() {
   const board = document.getElementById("board");
   board.innerHTML = "";
+  updateSortHeaders();
 
-  const sortedNames = Array.from(participants.keys()).sort((a, b) => a.localeCompare(b));
+  const [field, direction] = sortMode.split("-");
+  const dir = direction === "desc" ? -1 : 1;
+
+  const sortedNames = Array.from(participants.keys()).sort((a, b) => {
+    const dataA = participants.get(a);
+    const dataB = participants.get(b);
+    let result = 0;
+
+    if (field === "name") {
+      result = a.localeCompare(b);
+    } else if (field === "level") {
+      // Missing/non-numeric levels sort to the bottom regardless of direction.
+      const numA = parseInt(dataA.level, 10);
+      const numB = parseInt(dataB.level, 10);
+      const validA = !isNaN(numA);
+      const validB = !isNaN(numB);
+      if (!validA && !validB) result = 0;
+      else if (!validA) return 1;
+      else if (!validB) return -1;
+      else result = numA - numB;
+    } else if (field === "role") {
+      result = (dataA.role || "").localeCompare(dataB.role || "");
+    } else if (field === "focus") {
+      result = (dataA.focus || "").localeCompare(dataB.focus || "");
+    }
+
+    // Tie-break by name (always ascending) so equal values stay stable and predictable.
+    if (result === 0) return a.localeCompare(b);
+    return result * dir;
+  });
 
   sortedNames.forEach(name => {
     const data = participants.get(name);
@@ -981,8 +1031,32 @@ function organizeBy(type) {
   alert("Organize by: " + type);
 }
 
-function sortBy(type) {
-  alert("Sort by: " + type);
+function toggleSort(field) {
+  const [currentField, currentDirection] = sortMode.split("-");
+  if (currentField === field) {
+    // Clicking the same column again flips the direction.
+    sortMode = field + "-" + (currentDirection === "asc" ? "desc" : "asc");
+  } else {
+    // Switching to a new column starts fresh at ascending.
+    sortMode = field + "-asc";
+  }
+  renderBoard();
+}
+
+function updateSortHeaders() {
+  const [field, direction] = sortMode.split("-");
+  ["name", "level", "role", "focus"].forEach(f => {
+    const header = document.getElementById("sortHeader-" + f);
+    if (!header) return;
+    const arrow = header.querySelector(".sort-arrow");
+    if (f === field) {
+      header.classList.add("active");
+      arrow.textContent = direction === "asc" ? "▲" : "▼";
+    } else {
+      header.classList.remove("active");
+      arrow.textContent = "";
+    }
+  });
 }
 
 </script>
