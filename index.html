@@ -555,6 +555,15 @@
     background: rgba(53,214,143,0.2);
   }
 
+  .player-row .player-skills .skill-item.skill-yellow {
+    color: #e0c341;
+    background: rgba(224,195,65,0.14);
+  }
+
+  .player-row .player-skills .skill-item.skill-yellow:hover {
+    background: rgba(224,195,65,0.22);
+  }
+
   .add-row-trigger {
     display: flex;
     align-items: center;
@@ -1180,7 +1189,14 @@ function addPlayersFromTextarea() {
     // Strip an optional leading [KUKORO] tag, same as the live chat parser does.
     const cleaned = line.replace(/\[KUKORO\]/i, "").trim();
 
-    if (cleaned.includes("(") && cleaned.includes("[")) {
+    // Same three-way check as the live chat listener: a focus-switch line
+    // first, since it has neither "(" nor "[" and would otherwise fall
+    // through to the bare-name branch below (which wipes skills/focus).
+    const focusMatch = cleaned.match(/^(\S+)\s+has switched focus to\s+([^.]+)\.?/i);
+
+    if (focusMatch) {
+      handleFocusSwitch(focusMatch[1], focusMatch[2].trim());
+    } else if (cleaned.includes("(") && cleaned.includes("[")) {
       // Looks like a full raid announcement (stats parens + at least one
       // skill bracket) — reuse the exact same parser the chat listener
       // uses, so a pasted message ends up identical to one heard live.
@@ -1267,8 +1283,16 @@ function renderBoard() {
 
     const skillsHtml = data.skills.length
       ? data.skills.map((s, i) => {
-          const highlightClass = s.highlight === "red" ? " skill-red" : s.highlight === "green" ? " skill-green" : "";
-          return `<div class="skill-item${highlightClass}" data-name="${escapeHtml(name)}" data-index="${i}" title="Click to highlight red/green"><span class="skill-num">${i + 1}.</span>${escapeHtml(s.text)}</div>`;
+          // A "Focusing enemy X" entry is a stand-in the tool creates when a
+          // focus-switch message arrives for a player with no real skills
+          // yet — flag it yellow regardless of its stored highlight so it's
+          // obviously a placeholder waiting on a full stats announcement.
+          const isFocusPlaceholder = /^focusing enemy /i.test(s.text);
+          const highlightClass = isFocusPlaceholder
+            ? " skill-yellow"
+            : s.highlight === "red" ? " skill-red" : s.highlight === "green" ? " skill-green" : "";
+          const title = isFocusPlaceholder ? "Placeholder — waiting for full stats" : "Click to highlight red/green";
+          return `<div class="skill-item${highlightClass}" data-name="${escapeHtml(name)}" data-index="${i}" title="${title}"><span class="skill-num">${i + 1}.</span>${escapeHtml(s.text)}</div>`;
         }).join("")
       : "—";
 
