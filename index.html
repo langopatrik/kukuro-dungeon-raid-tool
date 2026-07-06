@@ -783,7 +783,7 @@
 
       <div id="boardPanel" class="panel">
         <div class="board-header">
-          <div class="sort-header" id="sortHeader-name" onclick="toggleSort('name')">Player<span class="sort-arrow"></span></div>
+          <div class="sort-header" id="sortHeader-name" onclick="toggleSort('name')">Players <span id="playerCount"></span><span class="sort-arrow"></span></div>
           <div class="sort-header" id="sortHeader-level" onclick="toggleSort('level')">Level<span class="sort-arrow"></span></div>
           <div>Stats</div>
           <div class="sort-header" id="sortHeader-role" onclick="toggleSort('role')">Role<span class="sort-arrow"></span></div>
@@ -837,6 +837,7 @@
 let ws;
 let manualDisconnect = false;
 let participants = new Map(); // name -> { stats, role, skills }
+const MAX_PLAYERS = 16;
 let sortMode = "name-asc";
 let addingRow = false;
 let editingName = null;
@@ -1235,6 +1236,11 @@ function renderBoard() {
   const board = document.getElementById("board");
   board.innerHTML = "";
   updateSortHeaders();
+
+  const playerCountEl = document.getElementById("playerCount");
+  if (playerCountEl) {
+    playerCountEl.textContent = "(" + participants.size + "/" + MAX_PLAYERS + ")";
+  }
 
   const [field, direction] = sortMode.split("-");
   const dir = direction === "desc" ? -1 : 1;
