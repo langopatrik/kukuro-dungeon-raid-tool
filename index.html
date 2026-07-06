@@ -905,6 +905,7 @@
   </div>
 </div>
 
+<script src="patterns.js"></script>
 <script>
 let ws;
 let manualDisconnect = false;
@@ -1111,24 +1112,18 @@ function parseKukoroMessage(text) {
   return { name, level, stats, role, skills, focus };
 }
 
-// Strong patterns: literal, fixed-meaning phrases. If one of these appears
-// in a skill's text, its focus value is used outright — no extraction, no
-// guessing. Checked in this order (top to bottom); the first one that
-// matches a given skill wins. These always take priority over the weak
-// variable pattern below, even when the weak pattern would also match.
-const STRONG_FOCUS_PATTERNS = [
-  // English
-  { re: /\ball\s+the\s+enemyies\b/i, focus: "all" },
-  { re: /\ball\s+enemies\b/i, focus: "all" },
-  { re: /\btougher\s+enemies\b/i, focus: "tougher" },
-  { re: /\bresilient\s+enemy\b/i, focus: "resilient" },
-  // Spanish
-  { re: /\btodos\s+los\s+enemigos\b/i, focus: "todos" },
-  { re: /\bdragón\s+enemigo\b/i, focus: "dragón" },
-  { re: /\btodos\s+enemigos\b/i, focus: "todos" },
-  { re: /\benemigos\s+más\s+resistentes\b/i, focus: "resistenses" },
-  { re: /\bcualquier\s+jefe\b/i, focus: "jefe" },
-];
+// The actual keyword list (language, phrase, focus label) lives in
+// patterns.js, loaded via <script src="patterns.js"> above, as a plain,
+// readable list — no regex needed to edit it. This turns each plain phrase
+// into the case-insensitive, whole-word/whole-phrase regex the matching
+// code below needs, keeping that regex detail out of the editable file.
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+const STRONG_FOCUS_PATTERNS = FOCUS_KEYWORDS.map(({ phrase, focus }) => {
+  const words = phrase.trim().split(/\s+/).map(escapeRegExp);
+  return { re: new RegExp("\\b" + words.join("\\s+") + "\\b", "i"), focus };
+});
 
 // Single source of truth for a player's focus: scans skill text for a
 // strong literal pattern first, falling back to the weak "enemy X" pattern
