@@ -1111,23 +1111,56 @@ function parseKukoroMessage(text) {
   return { name, level, stats, role, skills, focus };
 }
 
-// Single source of truth for a player's focus: scans skill text for
-// "enemy X" mentions and combines distinct types into "Mixed (A, B)".
-// Returns null (rendered as "Unknown" on the board) when there are no
-// skills, or none of them name an enemy.
+// Strong patterns: literal, fixed-meaning phrases. If one of these appears
+// in a skill's text, its focus value is used outright — no extraction, no
+// guessing. Checked in this order (top to bottom); the first one that
+// matches a given skill wins. These always take priority over the weak
+// variable pattern below, even when the weak pattern would also match.
+const STRONG_FOCUS_PATTERNS = [
+  // English
+  { re: /\ball\s+the\s+enemyies\b/i, focus: "all" },
+  { re: /\ball\s+enemies\b/i, focus: "all" },
+  { re: /\btougher\s+enemies\b/i, focus: "tougher" },
+  { re: /\bresilient\s+enemy\b/i, focus: "resilient" },
+  // Spanish
+  { re: /\btodos\s+los\s+enemigos\b/i, focus: "todos" },
+  { re: /\btodos\s+enemigos\b/i, focus: "todos" },
+  { re: /\benemigos\s+más\s+resistentes\b/i, focus: "resistenses" },
+];
+
+// Single source of truth for a player's focus: scans skill text for a
+// strong literal pattern first, falling back to the weak "enemy X" pattern
+// only when no strong pattern matches, then combines distinct types found
+// across all of a player's skills into "Mixed (A, B)". Returns null
+// (rendered as "Unknown" on the board) when there are no skills, or none of
+// them name an enemy.
 function deriveFocusFromSkills(skills) {
   if (!skills || skills.length === 0) return null;
 
   const enemyTypes = [];
   for (const skill of skills) {
+    let type = null;
+
+    // Strong patterns first — literal phrases with a fixed, known focus
+    // value. Scan the whole list; the first one that matches this skill's
+    // text wins.
+    for (const strong of STRONG_FOCUS_PATTERNS) {
+      if (strong.re.test(skill.text)) {
+        type = strong.focus;
+        break;
+      }
+    }
+
+    // No strong pattern matched — fall back to the weak, variable pattern.
     // English puts the creature type after the word "enemy" (e.g. "enemy
     // troll"). Spanish reverses that order and uses "enemigo" (e.g. "troll
     // enemigo"), so try both patterns.
-    const fm = skill.text.match(/enemy (\w+)/i) || skill.text.match(/(\w+)\s+enemigo/i);
-    if (fm) {
-      const type = fm[1].toLowerCase();
-      if (!enemyTypes.includes(type)) enemyTypes.push(type);
+    if (!type) {
+      const fm = skill.text.match(/enemy (\w+)/i) || skill.text.match(/(\w+)\s+enemigo/i);
+      if (fm) type = fm[1].toLowerCase();
     }
+
+    if (type && !enemyTypes.includes(type)) enemyTypes.push(type);
   }
 
   if (enemyTypes.length > 1) {
