@@ -192,6 +192,15 @@
     color: var(--accent-2);
   }
 
+  .button-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .button-row button {
+    margin-bottom: 0;
+  }
+
   .content {
     flex: 1;
     padding: 20px;
@@ -285,7 +294,10 @@
         <div class="field-label">Twitch Channel</div>
         <input id="channelInput" type="text" placeholder="channel name">
         <button class="primary" onclick="connect()">Connect Chat</button>
-        <button class="danger" onclick="disconnect()">Disconnect Chat</button>
+        <div class="button-row">
+          <button class="danger" onclick="disconnect()">Disconnect</button>
+          <button class="danger" onclick="resetTool()">Clear</button>
+        </div>
       </div>
 
       <div class="section">
@@ -310,7 +322,6 @@
       </div>
 
       <div class="section">
-        <button class="danger" onclick="resetTool()">Reset</button>
         <button onclick="toggleDarkMode()">Toggle Theme</button>
         <button class="ghost" onclick="readMe()">Read Me</button>
       </div>
