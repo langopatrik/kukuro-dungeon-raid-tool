@@ -1287,7 +1287,7 @@ function renderBoard() {
           // focus-switch message arrives for a player with no real skills
           // yet — flag it yellow regardless of its stored highlight so it's
           // obviously a placeholder waiting on a full stats announcement.
-          const isFocusPlaceholder = /^focusing enemy /i.test(s.text);
+          const isFocusPlaceholder = /^focusing enemy \S+$/i.test(s.text.trim());
           const highlightClass = isFocusPlaceholder
             ? " skill-yellow"
             : s.highlight === "red" ? " skill-red" : s.highlight === "green" ? " skill-green" : "";
