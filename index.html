@@ -459,6 +459,18 @@
     color: var(--text);
   }
 
+  .player-row .player-level.level-low {
+    color: var(--success);
+  }
+
+  .player-row .player-level.level-mid {
+    color: #e0c341;
+  }
+
+  .player-row .player-level.level-high {
+    color: var(--accent-2);
+  }
+
   .player-row .player-stats {
     font-size: 12px;
     color: var(--text-dim);
@@ -470,8 +482,12 @@
 
   .player-row .player-focus {
     font-size: 12px;
-    color: var(--success);
+    color: var(--text-dim);
     text-transform: capitalize;
+  }
+
+  .player-row .player-focus.has-focus {
+    color: var(--success);
   }
 
   .player-row .player-skills {
@@ -1030,6 +1046,14 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+function getLevelClass(level) {
+  const num = parseInt(level, 10);
+  if (isNaN(num)) return "";
+  if (num >= 18) return "level-high";
+  if (num >= 14) return "level-mid";
+  return "level-low";
+}
+
 function disconnect() {
   if (!ws) {
     document.getElementById("statusText").textContent = "disconnected";
@@ -1128,9 +1152,24 @@ function renderBoard() {
       result = (dataA.focus || "").localeCompare(dataB.focus || "");
     }
 
-    // Tie-break by name (always ascending) so equal values stay stable and predictable.
-    if (result === 0) return a.localeCompare(b);
-    return result * dir;
+    if (result !== 0) {
+      return result * dir;
+    }
+
+    // Tied on the primary column — break the tie by level (higher level
+    // shown above lower), and only fall back to alphabetical order if
+    // the levels match too (or the primary column already was level).
+    if (field !== "level") {
+      const numA = parseInt(dataA.level, 10);
+      const numB = parseInt(dataB.level, 10);
+      const validA = !isNaN(numA);
+      const validB = !isNaN(numB);
+      if (validA && !validB) return -1;
+      if (!validA && validB) return 1;
+      if (validA && validB && numA !== numB) return numB - numA;
+    }
+
+    return a.localeCompare(b);
   });
 
   sortedNames.forEach(name => {
@@ -1153,10 +1192,10 @@ function renderBoard() {
 
     row.innerHTML = `
       <div class="player-name">${escapeHtml(name)}</div>
-      <div class="player-level">${escapeHtml(data.level) || "—"}</div>
+      <div class="player-level ${getLevelClass(data.level)}">${escapeHtml(data.level) || "—"}</div>
       <div class="player-stats">${escapeHtml(data.stats) || "—"}</div>
       <div class="player-role">${escapeHtml(data.role) || "—"}</div>
-      <div class="player-focus">${escapeHtml(data.focus) || "Unknown"}</div>
+      <div class="player-focus${data.focus ? " has-focus" : ""}">${escapeHtml(data.focus) || "Unknown"}</div>
       <div class="player-skills">${skillsHtml}</div>
     `;
 
