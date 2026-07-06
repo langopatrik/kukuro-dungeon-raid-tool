@@ -611,7 +611,6 @@ function connect() {
   manualDisconnect = false;
 
   const chatBox = document.getElementById("chat");
-  chatBox.innerHTML = "";
   document.getElementById("statusText").textContent = "connecting to #" + channel + "…";
 
   ws = new WebSocket("wss://irc-ws.chat.twitch.tv:443");
