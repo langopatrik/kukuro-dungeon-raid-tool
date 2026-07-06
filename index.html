@@ -442,6 +442,39 @@
     margin-right: 4px;
   }
 
+  .player-row .player-skills .skill-item {
+    padding: 3px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .player-row .player-skills .skill-item + .skill-item {
+    margin-top: 3px;
+  }
+
+  .player-row .player-skills .skill-item:hover {
+    background: rgba(255,255,255,0.06);
+  }
+
+  .player-row .player-skills .skill-item.skill-red {
+    color: var(--accent-2);
+    background: rgba(255,107,107,0.12);
+  }
+
+  .player-row .player-skills .skill-item.skill-red:hover {
+    background: rgba(255,107,107,0.2);
+  }
+
+  .player-row .player-skills .skill-item.skill-green {
+    color: var(--success);
+    background: rgba(53,214,143,0.12);
+  }
+
+  .player-row .player-skills .skill-item.skill-green:hover {
+    background: rgba(53,214,143,0.2);
+  }
+
   .add-row-trigger {
     display: flex;
     align-items: center;
@@ -873,18 +906,36 @@ function parseKukoroMessage(text) {
     role = segment;
   }
 
-  const skills = [];
+  // Capture each skill along with its position, so we can inspect the word
+  // sitting between two skills (e.g. "and" vs "but") to tell whether the
+  // second one is a downside rather than a bonus.
+  const skillMatches = [];
   const skillRegex = /\[\s*([^\]]*?)\s*\]/g;
   let m;
   while ((m = skillRegex.exec(text)) !== null) {
-    skills.push(m[1].trim());
+    skillMatches.push({ text: m[1].trim(), start: m.index, end: m.index + m[0].length });
   }
+
+  const skills = skillMatches.map((match, i) => {
+    // "but" between two skills signals the following skill is a drawback,
+    // not a bonus — highlight it red automatically. "and" (or anything
+    // else) leaves it unhighlighted; the player can still override this
+    // manually by clicking the skill on the board.
+    let highlight = "none";
+    if (i > 0) {
+      const connector = text.slice(skillMatches[i - 1].end, match.start);
+      if (/\bbut\b/i.test(connector)) {
+        highlight = "red";
+      }
+    }
+    return { text: match.text, highlight };
+  });
 
   // Track the creature currently being targeted (e.g. "lizard" from
   // "enemy lizard"), so a later focus-switch message knows what to replace.
   let focus = null;
   for (const skill of skills) {
-    const fm = skill.match(/enemy (\w+)/i);
+    const fm = skill.text.match(/enemy (\w+)/i);
     if (fm) { focus = fm[1].toLowerCase(); break; }
   }
 
@@ -909,7 +960,7 @@ function handleFocusSwitch(name, newCreature) {
     if (player.focus) {
       const escaped = player.focus.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const regex = new RegExp(escaped, "gi");
-      player.skills = player.skills.map(s => s.replace(regex, newCreature));
+      player.skills = player.skills.map(s => ({ text: s.text.replace(regex, newCreature), highlight: s.highlight }));
     }
 
     player.focus = newCreature.toLowerCase();
@@ -920,7 +971,7 @@ function handleFocusSwitch(name, newCreature) {
       level: "",
       stats: "",
       role: "",
-      skills: [`Focuses ${newCreature}`],
+      skills: [{ text: `Focuses ${newCreature}`, highlight: "none" }],
       focus: newCreature.toLowerCase()
     });
   }
@@ -1043,7 +1094,10 @@ function renderBoard() {
     row.className = "player-row";
 
     const skillsHtml = data.skills.length
-      ? data.skills.map((s, i) => `<span class="skill-num">${i + 1}.</span>${escapeHtml(s)}`).join("<br>")
+      ? data.skills.map((s, i) => {
+          const highlightClass = s.highlight === "red" ? " skill-red" : s.highlight === "green" ? " skill-green" : "";
+          return `<div class="skill-item${highlightClass}" data-name="${escapeHtml(name)}" data-index="${i}" title="Click to highlight red/green"><span class="skill-num">${i + 1}.</span>${escapeHtml(s.text)}</div>`;
+        }).join("")
       : "—";
 
     row.innerHTML = `
@@ -1118,7 +1172,8 @@ function saveNewRow() {
   const skills = document.getElementById("addRowSkills").value
     .split("\n")
     .map(s => s.trim())
-    .filter(s => s.length > 0);
+    .filter(s => s.length > 0)
+    .map(text => ({ text, highlight: "none" }));
 
   participants.set(name, { level, stats, role, skills, focus });
 
@@ -1182,6 +1237,32 @@ function updateSortHeaders() {
     }
   });
 }
+
+function toggleSkillHighlight(name, index) {
+  if (!participants.has(name)) return;
+  const player = participants.get(name);
+  if (!player.skills[index]) return;
+
+  // Cycle: none -> red -> green -> none, so players can mark a skill as a
+  // downside (red) or an upside (green) regardless of how it was parsed.
+  const current = player.skills[index].highlight || "none";
+  const next = current === "none" ? "red" : current === "red" ? "green" : "none";
+  player.skills[index].highlight = next;
+  participants.set(name, player);
+  renderBoard();
+}
+
+// Single delegated listener for skill clicks — attached once here rather
+// than re-attached inside renderBoard(), since #board itself is never
+// replaced (only its contents are re-rendered) and re-adding a listener
+// on every render would stack duplicate handlers.
+document.getElementById("board").addEventListener("click", (e) => {
+  const item = e.target.closest(".skill-item");
+  if (!item) return;
+  const name = item.dataset.name;
+  const index = parseInt(item.dataset.index, 10);
+  toggleSkillHighlight(name, index);
+});
 
 // Render once on load so the "+ Add Player" trigger shows immediately,
 // even before any data has come in from chat or been added manually.
