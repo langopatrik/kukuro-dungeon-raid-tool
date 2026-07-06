@@ -285,6 +285,7 @@
         <div class="field-label">Twitch Channel</div>
         <input id="channelInput" type="text" placeholder="channel name">
         <button class="primary" onclick="connect()">Connect Chat</button>
+        <button class="danger" onclick="disconnect()">Disconnect Chat</button>
       </div>
 
       <div class="section">
@@ -331,6 +332,7 @@
 
 <script>
 let ws;
+let manualDisconnect = false;
 
 /* ORIGINAL CHAT LOGIC (UNCHANGED) */
 function connect() {
@@ -345,6 +347,7 @@ function connect() {
     ws.close();
     ws = null;
   }
+  manualDisconnect = false;
 
   const chatBox = document.getElementById("chat");
   chatBox.innerHTML = "";
@@ -360,7 +363,10 @@ function connect() {
   };
 
   ws.onclose = () => {
-    document.getElementById("statusText").textContent = "disconnected";
+    if (!manualDisconnect) {
+      document.getElementById("statusText").textContent = "disconnected (connection dropped)";
+    }
+    manualDisconnect = false;
   };
 
   ws.onmessage = (event) => {
@@ -413,6 +419,17 @@ function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
   return div.innerHTML;
+}
+
+function disconnect() {
+  if (!ws) {
+    document.getElementById("statusText").textContent = "disconnected";
+    return;
+  }
+  manualDisconnect = true;
+  ws.close();
+  ws = null;
+  document.getElementById("statusText").textContent = "disconnected";
 }
 
 /* BUTTON FUNCTIONS */
