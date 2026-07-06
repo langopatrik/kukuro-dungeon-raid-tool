@@ -1,40 +1,283 @@
-<div class="sidebar">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kukoro Dungeon Raid Tool</title>
 
-  <div class="field-label">Twitch Channel:</div>
-  <textarea id="channelInput" placeholder="Enter channel name..."></textarea>
-  <button onclick="connect()">Connect Chat</button>
+<style>
+  * { box-sizing: border-box; }
 
-  <hr>
+  body {
+    margin: 0;
+    background: #d4d4d4;
+    font-family: Georgia, 'Times New Roman', serif;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+  }
 
-  <div class="field-label">Boss Race:</div>
-  <button>Set</button>
+  .app {
+    width: 1000px;
+    background: #fff;
+    border: 1px solid #444;
+    display: flex;
+    flex-direction: column;
+  }
 
-  <hr>
+  .title-bar {
+    border-bottom: 1px solid #444;
+    padding: 14px 0;
+    text-align: center;
+  }
 
-  <div class="field-label">Organize by: Players</div>
-  <button>Targets</button>
+  .title-bar h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: bold;
+  }
 
-  <hr>
+  .main-area {
+    display: flex;
+    border-bottom: 1px solid #444;
+  }
 
-  <div class="field-label">Sort by: Name</div>
-  <button>Level</button>
+  .sidebar {
+    width: 260px;
+    border-right: 1px solid #444;
+    padding: 14px 18px;
+  }
 
-  <hr>
+  .content {
+    flex: 1;
+    padding: 14px;
+  }
 
-  <div class="field-label">Player Data:</div>
-  <textarea placeholder="Place player data here..."></textarea>
-  <button>Add Players</button>
+  .field-label {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
 
-  <hr>
+  hr {
+    border: none;
+    border-top: 1px solid #666;
+    margin: 10px 0 16px 0;
+  }
 
-  <button onclick="resetTool()">Reset</button>
+  button {
+    display: block;
+    width: 160px;
+    margin: 0 auto 6px auto;
+    padding: 6px 0;
+    background: #e6e6e6;
+    border: 1px solid #888;
+    font-family: Georgia, serif;
+    font-size: 13px;
+    cursor: pointer;
+  }
 
-  <hr>
+  button:hover {
+    background: #d8d8d8;
+  }
 
-  <button onclick="toggleDarkMode()">Dark Mode</button>
+  textarea {
+    display: block;
+    width: 100%;
+    height: 90px;
+    margin-bottom: 14px;
+    font-family: Georgia, serif;
+    font-size: 13px;
+    resize: vertical;
+    border: 1px solid #444;
+  }
 
-  <hr>
+  .chat {
+    height: 720px;
+    overflow-y: auto;
+    border: 1px solid #444;
+    padding: 10px;
+    font-size: 14px;
+    background: #fff;
+  }
 
-  <button>Read Me</button>
+  .msg {
+    margin-bottom: 6px;
+    padding: 4px 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .tag {
+    color: #00a86b;
+    font-weight: bold;
+  }
+
+  .name {
+    color: #1a4fa0;
+    font-weight: bold;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 12px 0;
+    font-size: 14px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <div class="title-bar">
+    <h1>Kukoro Dungeon Raid Player Data Tool</h1>
+  </div>
+
+  <div class="main-area">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar>
+
+      <div class="field-label">Twitch Channel:</div>
+      <textarea id="channelInput" placeholder="Enter channel name..."></textarea>
+
+      <button onclick="connect()">Connect Chat</button>
+
+      <hr>
+
+      <!-- NEW CONTROLS -->
+
+      <div class="field-label">Boss Race:</div>
+      <button onclick="setBossRace()">Set</button>
+
+      <hr>
+
+      <div class="field-label">Organize by:</div>
+      <button onclick="organizeBy('players')">Players</button>
+
+      <hr>
+
+      <div class="field-label">Sort by:</div>
+      <button onclick="sortBy('name')">Name</button>
+
+      <hr>
+
+      <div class="field-label">Player Data:</div>
+      <textarea placeholder="Place player data here..."></textarea>
+
+      <button>Add Players</button>
+
+      <hr>
+
+      <button onclick="resetTool()">Reset</button>
+
+      <hr>
+
+      <button onclick="toggleDarkMode()">Dark Mode</button>
+
+      <hr>
+
+      <button onclick="readMe()">Read Me</button>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+
+      <div id="chat" class="chat"></div>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+    See "<a href="#">Read Me</a>" for Copyright & Permissions.
+  </div>
 
 </div>
+
+<script>
+let ws;
+
+/* ORIGINAL CHAT LOGIC (UNCHANGED) */
+function connect() {
+  const channel = document.getElementById("channelInput").value.trim().toLowerCase();
+  if (!channel) return;
+
+  const chatBox = document.getElementById("chat");
+  chatBox.innerHTML = "";
+
+  ws = new WebSocket("wss://irc-ws.chat.twitch.tv:443");
+
+  ws.onopen = () => {
+    ws.send("CAP REQ :twitch.tv/tags twitch.tv/commands twitch.tv/membership");
+    ws.send("NICK justinfan" + Math.floor(Math.random() * 100000));
+    ws.send("JOIN #" + channel);
+  };
+
+  ws.onmessage = (event) => {
+    const msg = event.data;
+
+    if (msg.includes("PRIVMSG")) {
+
+      const userMatch = msg.match(/display-name=([^;]+)/);
+      const textMatch = msg.match(/PRIVMSG #[^ ]+ :(.*)/);
+
+      const username = userMatch ? userMatch[1] : "Unknown";
+      const text = textMatch ? textMatch[1] : "";
+
+      const cleanedText = text.replace(/\u0001/g, "").trim();
+
+      if (cleanedText.includes("[KUKORO]")) {
+
+        const cleaned = cleanedText
+          .replace("[KUKORO]", "")
+          .trim();
+
+        const div = document.createElement("div");
+        div.className = "msg";
+
+        div.innerHTML = `
+          <span class="tag">[KUKORO]</span>
+          <span class="name"> ${username}</span>: ${cleaned}
+        `;
+
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
+  };
+}
+
+/* NEW BUTTON FUNCTIONS (minimal placeholders) */
+function resetTool() {
+  document.getElementById("chat").innerHTML = "";
+}
+
+function toggleDarkMode() {
+  document.body.style.background =
+    document.body.style.background === "black" ? "#d4d4d4" : "black";
+
+  document.body.style.color =
+    document.body.style.color === "white" ? "black" : "white";
+}
+
+function readMe() {
+  alert("Kukoro Dungeon Raid Tool - Read Me placeholder");
+}
+
+function setBossRace() {
+  alert("Boss Race set (placeholder)");
+}
+
+function organizeBy(type) {
+  alert("Organize by: " + type);
+}
+
+function sortBy(type) {
+  alert("Sort by: " + type);
+}
+
+</script>
+
+</body>
+</html>
