@@ -1275,11 +1275,15 @@ function switchTab(tab) {
 
 function addPlayersFromTextarea() {
   const input = document.getElementById("playerDataInput");
-  const lines = input.value.split("\n").map(n => n.trim()).filter(n => n.length > 0);
+  const lines = input.value.split("\n")
+    .map(n => n.trim())
+    .filter(n => n.length > 0 && /\[KUKORO\]/i.test(n));
 
   lines.forEach(line => {
-    // Strip an optional leading [KUKORO] tag, same as the live chat parser does.
-    const cleaned = line.replace(/\[KUKORO\]/i, "").trim();
+    // Strip everything up to and including an optional [KUKORO] tag (e.g. a
+    // leading username or "username :" that Twitch chat prepends), so a
+    // straight copy-paste from chat works the same as the live listener.
+    const cleaned = line.replace(/^.*?\[KUKORO\]\s*/i, "").trim();
 
     // Same three-way check as the live chat listener: a focus-switch line
     // first, since it has neither "(" nor "[" and would otherwise fall
