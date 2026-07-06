@@ -891,6 +891,15 @@ function connect() {
 
       if (!line.includes("PRIVMSG")) continue;
 
+      // Only trust messages posted by the channel's own account — the IRC
+      // line prefix (":<login>!<login>@<login>.tmi.twitch.tv PRIVMSG ...")
+      // carries the actual sender login, which we compare against the
+      // channel we joined. Without this, any viewer in chat could type
+      // "[KUKORO] FakePlayer (...)" and inject bogus data onto the board.
+      const senderMatch = line.match(/^:([^!]+)!/);
+      const senderLogin = senderMatch ? senderMatch[1].toLowerCase() : "";
+      if (senderLogin !== channel) continue;
+
       const userMatch = line.match(/display-name=([^;]+)/);
       const textMatch = line.match(/PRIVMSG #[^ ]+ :(.*)/);
 
