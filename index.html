@@ -908,14 +908,14 @@ function connect() {
           .trim();
 
         const nameMatch = cleaned.match(/^(\S+)/);
-        const name = nameMatch ? nameMatch[1] : "Unknown";
-        const restText = cleaned.slice(name.length);
+        const rawName = nameMatch ? nameMatch[1] : "Unknown";
+        const restText = cleaned.slice(rawName.length);
 
         const div = document.createElement("div");
         div.className = "msg";
 
         div.innerHTML =
-          `<span class="chat-name">${escapeHtml(name)}</span>` +
+          `<span class="chat-name">${escapeHtml(canonicalizeName(rawName))}</span>` +
           `<span class="text">${escapeHtml(restText)}</span>`;
 
         chatBox.appendChild(div);
@@ -952,7 +952,7 @@ function parseKukoroMessage(text) {
   // Example: DAMR66 (Lv. 18, Df. 15%, Crit. 20%, Agi. 15%) > 🗡️ Rogue
   // [ skill one ] and [ skill two ].
   const nameMatch = text.match(/^(\S+)/);
-  const name = nameMatch ? nameMatch[1] : "Unknown";
+  const name = canonicalizeName(nameMatch ? nameMatch[1] : "Unknown");
 
   const statsMatch = text.match(/\(([^)]*)\)/);
   let stats = statsMatch ? statsMatch[1].trim() : "";
@@ -1007,12 +1007,21 @@ function parseKukoroMessage(text) {
     return { text: match.text, highlight };
   });
 
-  // Track the creature(s) currently being targeted (e.g. "lizard" from
-  // "enemy lizard"). Most raid messages target a single creature, but some
-  // skills pull in different directions (one skill vs. "enemy lizard",
-  // another vs. "enemy orc") — when that happens, combine them into a
-  // single "Mixed (Type1, Type2)" label instead of just picking the first
-  // one found, so the board can flag it distinctly.
+  // Focus is always derived from the skill text (never tracked as its own
+  // independent value) — see deriveFocusFromSkills for the "enemy X"
+  // scanning and the Mixed(...) combination rule.
+  const focus = deriveFocusFromSkills(skills);
+
+  return { name, level, stats, role, skills, focus };
+}
+
+// Single source of truth for a player's focus: scans skill text for
+// "enemy X" mentions and combines distinct types into "Mixed (A, B)".
+// Returns null (rendered as "Unknown" on the board) when there are no
+// skills, or none of them name an enemy.
+function deriveFocusFromSkills(skills) {
+  if (!skills || skills.length === 0) return null;
+
   const enemyTypes = [];
   for (const skill of skills) {
     const fm = skill.text.match(/enemy (\w+)/i);
@@ -1022,15 +1031,13 @@ function parseKukoroMessage(text) {
     }
   }
 
-  let focus = null;
   if (enemyTypes.length > 1) {
     const titleCase = t => t.charAt(0).toUpperCase() + t.slice(1);
-    focus = "Mixed (" + enemyTypes.map(titleCase).join(", ") + ")";
+    return "Mixed (" + enemyTypes.map(titleCase).join(", ") + ")";
   } else if (enemyTypes.length === 1) {
-    focus = enemyTypes[0];
+    return enemyTypes[0];
   }
-
-  return { name, level, stats, role, skills, focus };
+  return null;
 }
 
 function upsertParticipant(parsed) {
@@ -1049,30 +1056,69 @@ function upsertParticipant(parsed) {
 }
 
 function handleFocusSwitch(name, newCreature) {
+  name = canonicalizeName(name);
+
   if (participants.has(name)) {
     const player = participants.get(name);
 
-    if (player.focus) {
-      const escaped = player.focus.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const regex = new RegExp(escaped, "gi");
-      player.skills = player.skills.map(s => ({ text: s.text.replace(regex, newCreature), highlight: s.highlight }));
+    if (player.skills.length === 0) {
+      // No skills recorded yet — the switch itself becomes the first skill
+      // entry, so focus keeps being derived from skills instead of tracked
+      // separately.
+      player.skills = [{ text: `Focusing enemy ${newCreature}`, highlight: "none" }];
+    } else if (player.focus) {
+      // Skills first: swap every mention of the old target creature(s) for
+      // the new one, wherever it appears in the skill text. A plain focus
+      // is one creature name; a combined "Mixed (A, B)" focus represents
+      // several, so pull each one out of the parentheses and replace all
+      // of them — after which re-deriving from skills naturally collapses
+      // back down to a single focus (since every "enemy X" now agrees).
+      const mixedMatch = player.focus.match(/^mixed\s*\((.+)\)$/i);
+      const oldTypes = mixedMatch
+        ? mixedMatch[1].split(",").map(t => t.trim()).filter(Boolean)
+        : [player.focus];
+
+      oldTypes.forEach(type => {
+        const escaped = type.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regex = new RegExp("\\b" + escaped + "\\b", "gi");
+        player.skills = player.skills.map(s => ({ text: s.text.replace(regex, newCreature), highlight: s.highlight }));
+      });
+    } else {
+      // Skills exist but none currently name an enemy — append a marker
+      // skill so the switch is still reflected in (and derivable from) the
+      // skill list.
+      player.skills = [...player.skills, { text: `Focusing enemy ${newCreature}`, highlight: "none" }];
     }
 
-    player.focus = newCreature.toLowerCase();
+    // Focus itself is never set directly — always recompute it from the
+    // (now updated) skills, same as a freshly parsed raid announcement.
+    player.focus = deriveFocusFromSkills(player.skills);
     participants.set(name, player);
   } else {
-    // Player hasn't posted full stats yet — just note what they're focusing.
+    // Player hasn't posted full stats yet — start their skill list with a
+    // focus marker so the board derives focus from it the same way it does
+    // for a fully parsed raid announcement.
+    const skills = [{ text: `Focusing enemy ${newCreature}`, highlight: "none" }];
     participants.set(name, {
       level: "",
       stats: "",
       role: "",
-      skills: [{ text: `Focuses ${newCreature}`, highlight: "none" }],
-      focus: newCreature.toLowerCase(),
+      skills,
+      focus: deriveFocusFromSkills(skills),
       nameHighlight: "green"
     });
   }
 
   renderBoard();
+}
+
+// Player names are treated case-insensitively — "BOT-MEADOW" and
+// "bot-meadow" are the same player — and always stored/displayed in caps.
+// Every place a name is captured from parsed text or typed into a form
+// runs it through this first, so the participants Map only ever has one
+// canonical (uppercase) key per player.
+function canonicalizeName(name) {
+  return (name || "").trim().toUpperCase();
 }
 
 function escapeHtml(str) {
@@ -1144,7 +1190,7 @@ function addPlayersFromTextarea() {
       // Otherwise treat it as a bare name, same as before — and never
       // clobber an existing player's real data with a blank entry.
       const nameMatch = cleaned.match(/^(\S+)/);
-      const name = nameMatch ? nameMatch[1] : cleaned;
+      const name = canonicalizeName(nameMatch ? nameMatch[1] : cleaned);
       if (name && !participants.has(name)) {
         participants.set(name, { level: "", stats: "", role: "", skills: [], focus: null, nameHighlight: "green" });
       }
@@ -1324,7 +1370,7 @@ function cancelAddRow() {
 }
 
 function saveNewRow() {
-  const name = document.getElementById("addRowName").value.trim();
+  const name = canonicalizeName(document.getElementById("addRowName").value.trim());
   if (!name) {
     document.getElementById("addRowName").focus();
     return;
@@ -1460,7 +1506,7 @@ function cancelEditRow() {
 
 function saveEditedRow(originalName) {
   const nameInput = document.getElementById("editRowName");
-  const newName = nameInput.value.trim();
+  const newName = canonicalizeName(nameInput.value.trim());
   if (!newName) {
     nameInput.focus();
     return;
