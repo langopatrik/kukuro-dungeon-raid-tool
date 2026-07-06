@@ -442,6 +442,98 @@
     margin-right: 4px;
   }
 
+  .add-row-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    color: var(--text-dim);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .add-row-trigger:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(124,92,255,0.08);
+  }
+
+  .add-row-trigger .plus-icon {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .player-row.add-row {
+    border-color: var(--accent);
+    align-items: start;
+  }
+
+  .add-row .add-input {
+    background: #0e1119;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-family: inherit;
+    font-size: 12px;
+    width: 100%;
+    margin: 0;
+  }
+
+  .add-row .add-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(124,92,255,0.25);
+  }
+
+  .add-skills-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .add-skills-cell textarea {
+    background: #0e1119;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-family: inherit;
+    font-size: 12px;
+    width: 100%;
+    height: 48px;
+    margin: 0;
+    resize: vertical;
+  }
+
+  .add-skills-cell textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(124,92,255,0.25);
+  }
+
+  .add-row-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .add-row-actions button {
+    margin: 0;
+    padding: 5px 0;
+    font-size: 12px;
+  }
+
+  .add-row-actions button.danger:hover {
+    border-color: var(--accent-2);
+    color: var(--accent-2);
+  }
+
   .chat {
     height: 720px;
     overflow-y: auto;
@@ -557,14 +649,6 @@
         <textarea id="playerDataInput" placeholder="Paste raid messages (or plain names), one per line..."></textarea>
         <button class="ghost" style="background:rgba(124,92,255,0.1)" onclick="addPlayersFromTextarea()">Add Players</button>
 
-        <div class="field-label" style="margin-top:14px;">Add Manually</div>
-        <input id="manualName" type="text" placeholder="Player name">
-        <input id="manualLevel" type="text" placeholder="Level (e.g. 18)">
-        <input id="manualStats" type="text" placeholder="Stats (e.g. Df. 15%, Crit. 15%, Agi. 10%)">
-        <input id="manualRole" type="text" placeholder="Role">
-        <input id="manualFocus" type="text" placeholder="Focus (e.g. lizard)">
-        <textarea id="manualSkills" placeholder="Skills, one per line..."></textarea>
-        <button class="ghost" style="background:rgba(124,92,255,0.1)" onclick="addPlayerManually()">Add Manual Row</button>
       </div>
 
     </div>
@@ -637,6 +721,7 @@ let ws;
 let manualDisconnect = false;
 let participants = new Map(); // name -> { stats, role, skills }
 let sortMode = "name-asc";
+let addingRow = false;
 
 /* ORIGINAL CHAT LOGIC (UNCHANGED) */
 function connect() {
@@ -916,34 +1001,6 @@ function addPlayersFromTextarea() {
   switchTab("board");
 }
 
-function addPlayerManually() {
-  const name = document.getElementById("manualName").value.trim();
-  if (!name) return;
-
-  const level = document.getElementById("manualLevel").value.trim();
-  const stats = document.getElementById("manualStats").value.trim();
-  const role = document.getElementById("manualRole").value.trim();
-  const focusRaw = document.getElementById("manualFocus").value.trim();
-  const focus = focusRaw ? focusRaw.toLowerCase() : null;
-  const skills = document.getElementById("manualSkills").value
-    .split("\n")
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
-
-  participants.set(name, { level, stats, role, skills, focus });
-  renderBoard();
-
-  // Clear the manual fields so the form is ready for the next row.
-  document.getElementById("manualName").value = "";
-  document.getElementById("manualLevel").value = "";
-  document.getElementById("manualStats").value = "";
-  document.getElementById("manualRole").value = "";
-  document.getElementById("manualFocus").value = "";
-  document.getElementById("manualSkills").value = "";
-
-  switchTab("board");
-}
-
 function renderBoard() {
   const board = document.getElementById("board");
   board.innerHTML = "";
@@ -1000,6 +1057,73 @@ function renderBoard() {
 
     board.appendChild(row);
   });
+
+  if (addingRow) {
+    board.appendChild(buildAddRowForm());
+  } else {
+    const trigger = document.createElement("div");
+    trigger.className = "add-row-trigger";
+    trigger.innerHTML = `<span class="plus-icon">+</span> Add Player`;
+    trigger.onclick = showAddRow;
+    board.appendChild(trigger);
+  }
+}
+
+function buildAddRowForm() {
+  const row = document.createElement("div");
+  row.className = "player-row add-row";
+
+  row.innerHTML = `
+    <input class="add-input" id="addRowName" type="text" placeholder="Player name">
+    <input class="add-input" id="addRowLevel" type="text" inputmode="numeric" placeholder="Level" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+    <input class="add-input" id="addRowStats" type="text" placeholder="Stats">
+    <input class="add-input" id="addRowRole" type="text" placeholder="Role">
+    <input class="add-input" id="addRowFocus" type="text" placeholder="Focus">
+    <div class="add-skills-cell">
+      <textarea id="addRowSkills" placeholder="Skills, one per line..."></textarea>
+      <div class="add-row-actions">
+        <button class="ghost" style="background:rgba(124,92,255,0.1)" onclick="saveNewRow()">Save</button>
+        <button class="ghost danger" onclick="cancelAddRow()">Cancel</button>
+      </div>
+    </div>
+  `;
+
+  return row;
+}
+
+function showAddRow() {
+  addingRow = true;
+  renderBoard();
+  const nameInput = document.getElementById("addRowName");
+  if (nameInput) nameInput.focus();
+}
+
+function cancelAddRow() {
+  addingRow = false;
+  renderBoard();
+}
+
+function saveNewRow() {
+  const name = document.getElementById("addRowName").value.trim();
+  if (!name) {
+    document.getElementById("addRowName").focus();
+    return;
+  }
+
+  const level = document.getElementById("addRowLevel").value.trim();
+  const stats = document.getElementById("addRowStats").value.trim();
+  const role = document.getElementById("addRowRole").value.trim();
+  const focusRaw = document.getElementById("addRowFocus").value.trim();
+  const focus = focusRaw ? focusRaw.toLowerCase() : null;
+  const skills = document.getElementById("addRowSkills").value
+    .split("\n")
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+
+  participants.set(name, { level, stats, role, skills, focus });
+
+  addingRow = false;
+  renderBoard();
 }
 
 function openSettings() {
@@ -1058,6 +1182,10 @@ function updateSortHeaders() {
     }
   });
 }
+
+// Render once on load so the "+ Add Player" trigger shows immediately,
+// even before any data has come in from chat or been added manually.
+renderBoard();
 
 </script>
 
