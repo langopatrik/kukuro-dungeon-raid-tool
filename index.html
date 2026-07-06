@@ -386,8 +386,8 @@
 
   .board-header, .player-row {
     display: grid;
-    grid-template-columns: 90px 50px 130px 80px 70px 1.6fr;
-    gap: 14px;
+    grid-template-columns: 118px 42px 122px 80px 70px 1.6fr;
+    gap: 10px;
     align-items: center;
   }
 
@@ -488,6 +488,12 @@
     padding: 3px 5px;
     border-radius: 5px;
     cursor: pointer;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
   }
 
   .player-row .player-name.name-green {
@@ -825,7 +831,7 @@
 
       <div class="section">
         <div class="field-label">Player Data</div>
-        <textarea id="playerDataInput" placeholder="Paste raid messages (or plain names), one per line..."></textarea>
+        <textarea id="playerDataInput" placeholder="Paste raid messages, one per line..."></textarea>
         <button class="ghost" style="background:rgba(124,92,255,0.1)" onclick="addPlayersFromTextarea()">Add Players</button>
 
       </div>
@@ -1120,10 +1126,19 @@ function parseKukoroMessage(text) {
 function escapeRegExp(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
-const STRONG_FOCUS_PATTERNS = FOCUS_KEYWORDS.map(({ phrase, focus }) => {
-  const words = phrase.trim().split(/\s+/).map(escapeRegExp);
-  return { re: new RegExp("\\b" + words.join("\\s+") + "\\b", "i"), focus };
-});
+// If patterns.js is missing or failed to load, FOCUS_KEYWORDS won't exist —
+// fall back to an empty list instead of throwing, so a missing file just
+// means no focus keywords are recognized rather than breaking the whole app.
+let STRONG_FOCUS_PATTERNS = [];
+try {
+  const focusKeywords = typeof FOCUS_KEYWORDS !== "undefined" ? FOCUS_KEYWORDS : [];
+  STRONG_FOCUS_PATTERNS = focusKeywords.map(({ phrase, focus }) => {
+    const words = phrase.trim().split(/\s+/).map(escapeRegExp);
+    return { re: new RegExp("\\b" + words.join("\\s+") + "\\b", "i"), focus };
+  });
+} catch (e) {
+  STRONG_FOCUS_PATTERNS = [];
+}
 
 // Single source of truth for a player's focus: scans skill text for a
 // strong literal pattern first, falling back to the weak "enemy X" pattern
@@ -1436,7 +1451,7 @@ function renderBoard() {
     const focusClass = data.focus ? (isMixedFocus ? " mixed-focus" : " has-focus") : "";
 
     row.innerHTML = `
-      <div class="player-name${nameHighlightClass}" data-name="${escapeHtml(name)}" title="Click to highlight red/green">${escapeHtml(name)}</div>
+      <div class="player-name${nameHighlightClass}" data-name="${escapeHtml(name)}" title="${escapeHtml(name)} — Click to highlight red/green">${escapeHtml(name)}</div>
       <div class="player-level ${getLevelClass(data.level)}">${escapeHtml(data.level) || "—"}</div>
       <div class="player-stats">${escapeHtml(data.stats) || "—"}</div>
       <div class="player-role">${escapeHtml(data.role) || "—"}</div>
@@ -1492,6 +1507,27 @@ function renderBoard() {
     });
     board.appendChild(trigger);
   }
+
+  fitPlayerNames();
+}
+
+// Long names can overlap the level column since the name cell is narrow.
+// Rather than let that happen, shrink each name's font size just enough to
+// fit its cell (down to a floor), then let CSS ellipsis (white-space:
+// nowrap + text-overflow: ellipsis) truncate anything still too long at
+// that floor size. Runs after rows are in the DOM so scrollWidth/clientWidth
+// reflect real layout.
+function fitPlayerNames() {
+  const MIN_FONT_PX = 10;
+  const MAX_FONT_PX = 13;
+  document.querySelectorAll(".player-row .player-name").forEach(el => {
+    el.style.fontSize = MAX_FONT_PX + "px";
+    let size = MAX_FONT_PX;
+    while (el.scrollWidth > el.clientWidth && size > MIN_FONT_PX) {
+      size -= 1;
+      el.style.fontSize = size + "px";
+    }
+  });
 }
 
 function buildAddRowForm() {
