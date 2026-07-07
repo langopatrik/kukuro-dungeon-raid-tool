@@ -27,33 +27,40 @@
     --row-hover: rgba(255,255,255,0.06);
     --bg-glow-1: rgba(124,92,255,0.10);
     --bg-glow-2: rgba(255,107,107,0.08);
+    --title-glow: rgba(124,92,255,0.08);
+    --warn: #e0c341;
   }
 
   /* Light theme overrides. Toggled via the Settings > Theme button, which
      sets data-theme="light" on <html> and persists the choice to
-     localStorage so it's restored on the next visit. */
+     localStorage so it's restored on the next visit. Built as its own
+     palette rather than an inverted dark theme: a soft lavender-tinted
+     canvas, a bright white app shell that lifts off it with a colored
+     shadow, and cards/inputs a shade apart from each other for depth. */
   :root[data-theme="light"] {
-    --bg: #f4f5f9;
+    --bg: #e9ebf5;
     --panel: #ffffff;
-    --panel-2: #f0f1f6;
-    --border: #dcdfe8;
-    --text: #1b1d27;
+    --panel-2: #f2f3fa;
+    --border: #dee1ee;
+    --text: #1f2130;
     --text-dim: #6b7086;
-    --accent: #6f47ff;
-    --accent-2: #e0505a;
-    --success: #17a874;
-    --input-bg: #ffffff;
-    --placeholder: #9298ac;
-    --button-bg: #eef0f6;
-    --button-bg-hover: #e4e7f1;
-    --button-border-hover: #c7cbdc;
-    --shadow: rgba(30,34,54,0.12);
-    --shadow-modal: rgba(30,34,54,0.18);
-    --overlay: rgba(20,22,34,0.35);
-    --surface-hover: rgba(20,22,34,0.03);
-    --row-hover: rgba(20,22,34,0.05);
-    --bg-glow-1: rgba(124,92,255,0.07);
-    --bg-glow-2: rgba(255,107,107,0.06);
+    --accent: #6d42f5;
+    --accent-2: #e2505b;
+    --success: #16966d;
+    --input-bg: #fbfbfe;
+    --placeholder: #9aa0b8;
+    --button-bg: #f0f1f8;
+    --button-bg-hover: #e6e8f4;
+    --button-border-hover: #c9cce3;
+    --shadow: rgba(83,66,159,0.16);
+    --shadow-modal: rgba(58,46,110,0.22);
+    --overlay: rgba(30,26,50,0.4);
+    --surface-hover: rgba(70,55,150,0.04);
+    --row-hover: rgba(70,55,150,0.06);
+    --bg-glow-1: rgba(124,92,255,0.10);
+    --bg-glow-2: rgba(255,107,107,0.08);
+    --title-glow: rgba(124,92,255,0.10);
+    --warn: #b8860a;
   }
 
   * { box-sizing: border-box; }
@@ -90,7 +97,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    background: linear-gradient(180deg, rgba(124,92,255,0.08), transparent);
+    background: linear-gradient(180deg, var(--title-glow), transparent);
   }
 
   .title-bar .mark {
@@ -554,7 +561,7 @@
   }
 
   .player-row .player-level.level-mid {
-    color: #e0c341;
+    color: var(--warn);
   }
 
   .player-row .player-level.level-high {
@@ -581,7 +588,7 @@
   }
 
   .player-row .player-focus.mixed-focus {
-    color: #e0c341;
+    color: var(--warn);
   }
 
   .player-row .player-skills {
@@ -765,7 +772,7 @@
   }
 
   .msg.zeatrise .chat-name {
-    color: #ffd600;
+    color: var(--warn);
   }
 
   .tag {
