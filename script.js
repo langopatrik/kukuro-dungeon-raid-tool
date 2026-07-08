@@ -434,6 +434,7 @@ function getPendingBoardTextCount() {
 // than piling up duplicates — that's how "N strings pending" keeps a single
 // live row that updates as the count changes.
 const NOTIFICATIONS_KEY = "kukoro_notifications";
+const DISMISSED_NOTIFICATIONS_KEY = "kukoro_dismissed_notifications";
 
 function loadNotifications() {
   try {
@@ -443,7 +444,16 @@ function loadNotifications() {
   return [];
 }
 
+function loadDismissedNotifications() {
+  try {
+    const raw = localStorage.getItem(DISMISSED_NOTIFICATIONS_KEY);
+    if (raw) return new Set(JSON.parse(raw));
+  } catch (e) { /* corrupt/missing — start fresh */ }
+  return new Set();
+}
+
 let notifications = loadNotifications();
+let dismissedNotifications = loadDismissedNotifications();
 let notifPanelOpen = false;
 
 function persistNotifications() {
@@ -452,7 +462,29 @@ function persistNotifications() {
   } catch (e) { /* storage unavailable/full */ }
 }
 
+function persistDismissedNotifications() {
+  try {
+    localStorage.setItem(DISMISSED_NOTIFICATIONS_KEY, JSON.stringify(Array.from(dismissedNotifications)));
+  } catch (e) { /* storage unavailable/full */ }
+}
+
+function isNotificationDismissed(id) {
+  return id && dismissedNotifications.has(id);
+}
+
+function dismissNotification(id) {
+  if (!id) return;
+  dismissedNotifications.add(id);
+  persistDismissedNotifications();
+}
+
+function clearDismissedNotification(id) {
+  if (!id) return;
+  if (dismissedNotifications.delete(id)) persistDismissedNotifications();
+}
+
 function addNotification(id, key, vars) {
+  if (id && isNotificationDismissed(id)) return;
   if (id) notifications = notifications.filter(n => n.id !== id);
   notifications.unshift({ id: id || null, key, vars: vars || {}, timestamp: Date.now() });
   persistNotifications();
@@ -471,6 +503,7 @@ function removeNotification(id) {
 }
 
 function clearAllNotifications() {
+  notifications.forEach(n => { if (n.id) dismissNotification(n.id); });
   notifications = [];
   persistNotifications();
   renderNotifPanel();
@@ -582,6 +615,7 @@ function updateTranslationBadge() {
   if (pending > 0) {
     addNotification("board_text_pending", "notif_board_text_pending", { count: pending });
   } else {
+    clearDismissedNotification("board_text_pending");
     removeNotification("board_text_pending");
   }
 }
