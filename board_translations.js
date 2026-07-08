@@ -32,6 +32,13 @@ Mixed (Goblin, Shadow)
 🕷️ X0.5 chance of dodging enemy spider attacks
 🕷️ X0.75 enemy spider damage on you
 spider
-
+🐸 Decrease your team agility when you miss against enemy goblin
+👁️ X0.5 damage received by enemy cyclops when the current minute is odd
+👻 50% chance to kill enemy shadow with one hit if you have 10hp or less
+👻 Distribute health to your teammates the same damage you received from enemy shadow
+👻 Slightly heals your team everytime you hit enemy shadow
+👻 Your level will become the same level of enemy shadow you fight
+Mixed (Cyclops, Shadow)
+shadow
 
 `;
