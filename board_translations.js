@@ -40,6 +40,8 @@ spider
 👻 Your level will become the same level of enemy shadow you fight
 Mixed (Cyclops, Shadow)
 shadow
+⚡ Crit. hits deal x0.5 damage against more agile enemies
+⚡ Your critical hits at more agile enemies will raise 2% the defense of your team
 
 
 `;
