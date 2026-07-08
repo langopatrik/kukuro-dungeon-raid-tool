@@ -139,9 +139,77 @@
   </div>
 
   <div class="footer" data-i18n-html="footer_html">
-    See "<a href="#" onclick="readMe(); return false;">Read Me</a>" for Copyright &amp; Permissions.
+    <a href="#" onclick="openToolReadme(); return false;">Read Me</a> · <a href="#" onclick="readMe(); return false;">Copyright &amp; Permissions</a> · <a href="#" onclick="openFaq(); return false;">FAQ</a> · <a href="#" onclick="openContacts(); return false;">Contacts</a>
   </div>
 
+</div>
+
+<!-- FAQ MODAL -->
+<div class="modal-overlay" id="faqOverlay" onclick="if(event.target===this) closeFaq()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 data-i18n="faq_title">FAQ</h2>
+      <button class="icon-btn" onclick="closeFaq()" aria-label="Close FAQ" data-i18n-aria="close_faq_aria">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="section faq-body">
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="faq_q1">How do I start tracking a raid?</div>
+        <div class="faq-a" data-i18n="faq_a1">Enter your Twitch channel name in the sidebar and click "Connect Chat". Once connected, raid messages will appear in the Chat tab and matching players will be added to the Board automatically.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="faq_q2">Why aren't players showing up on the Board?</div>
+        <div class="faq-a" data-i18n="faq_a2">Make sure you're connected to the correct channel and that chat messages follow the expected raid message format. You can also paste raid messages directly into the "Player Data" box and click "Add Players" to add them manually.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="faq_q3">Can I set a boss type and dungeon level?</div>
+        <div class="faq-a" data-i18n="faq_a3">Yes. Choose a boss from the dropdown (or enter a custom one), set the dungeon level, and click "Set" to display them at the top of the Board tab.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="faq_q4">What does "Export Board Text" do?</div>
+        <div class="faq-a" data-i18n="faq_a4">It collects roles, focuses, and skills currently shown on the Board so they can be translated or reviewed elsewhere. Found under Settings.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="faq_q5">How do I clear everything and start over?</div>
+        <div class="faq-a" data-i18n="faq_a5">Click "Disconnect" to leave the channel, then "Clear" to reset the chat log and Board.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACTS MODAL -->
+<div class="modal-overlay" id="contactsOverlay" onclick="if(event.target===this) closeContacts()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 data-i18n="contacts_title">Contacts</h2>
+      <button class="icon-btn" onclick="closeContacts()" aria-label="Close Contacts" data-i18n-aria="close_contacts_aria">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="section">
+      <div class="contact-item">
+        <span class="contact-name" data-i18n="contact_twitch">Twitch</span>
+        <a href="https://twitch.tv/damr66" target="_blank" rel="noopener noreferrer">twitch.tv/damr66</a>
+      </div>
+      <div class="contact-item">
+        <span class="contact-name" data-i18n="contact_discord">Discord</span>
+        <span class="contact-value">damr</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- SETTINGS MODAL -->
@@ -178,6 +246,41 @@
         <option value="de">Deutsch</option>
         <option value="ja">日本語</option>
       </select>
+    </div>
+  </div>
+</div>
+
+<!-- TOOL README MODAL -->
+<div class="modal-overlay" id="toolReadmeOverlay" onclick="if(event.target===this) closeToolReadme()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 data-i18n="tool_readme_title">Read Me</h2>
+      <button class="icon-btn" onclick="closeToolReadme()" aria-label="Close Read Me" data-i18n-aria="close_tool_readme_aria">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="section readme-body">
+      <h3>Kukoro Dungeon Raid Player Data Tool</h3>
+      <p>A web tool that makes running a Kukoro Dungeon Raid on Twitch more comfortable for everyone.</p>
+      <p>It connects to a Twitch channel's chat, parses the raid messages players post (level, stats, role, focus, skills), and lays them out on a clean, sortable board so the whole party can see who's doing what at a glance.</p>
+
+      <h3>Features</h3>
+      <ul>
+        <li>Live Twitch chat connection — connect to any channel and watch raid messages come in, with connection status shown at all times.</li>
+        <li>Automatic player parsing — pastes or live chat messages are parsed into structured player entries (level, stats, role, focus, skills) and added to the board.</li>
+        <li>Sortable board — sort players by name, level, role, or focus with a click.</li>
+        <li>Boss / Dungeon Level tracking — set the current boss type (pick from a list or type your own) and dungeon level, shown above the board.</li>
+        <li>Manual editing — add, edit, or remove players by hand; click a player's name or a skill to highlight it red/green.</li>
+        <li>Notifications — a bell icon surfaces things that need attention.</li>
+        <li>Light/dark theme, remembered between visits.</li>
+        <li>Multi-language UI — English, Español, Français, Deutsch, and 日本語, covering all interface chrome (labels, buttons, tooltips, alerts).</li>
+        <li>Board text translation workflow — the board also displays free-text pulled straight from raid chat (role/focus/skill descriptions) that isn't part of the UI dictionary. The tool tracks which of these strings are already known (via <code>board_translations.js</code>) versus still pending, and hands to a translator.</li>
+        <li>Works fully offline / from disk — all scripts are loaded as plain <code>&lt;script&gt;</code> tags, so the tool works even when <code>index.html</code> is opened directly as a local file, not just when served over http(s).</li>
+      </ul>
     </div>
   </div>
 </div>

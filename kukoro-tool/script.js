@@ -47,7 +47,7 @@ const I18N = {
     header_role: "Role",
     header_focus: "Focus",
     header_skills: "Skills",
-    footer_html: 'See "<a href="#" onclick="readMe(); return false;">Read Me</a>" for Copyright &amp; Permissions.',
+    footer_html: '<a href="#" onclick="openToolReadme(); return false;">Read Me</a> · <a href="#" onclick="readMe(); return false;">Copyright &amp; Permissions</a> · <a href="#" onclick="openFaq(); return false;">FAQ</a> · <a href="#" onclick="openContacts(); return false;">Contacts</a>',
     edit_player_title: "Edit player",
     remove_player_title: "Remove player",
     add_player_trigger: "Add Player",
@@ -67,6 +67,24 @@ const I18N = {
 
     readme_title: "Read Me",
     close_readme_aria: "Close Read Me",
+    tool_readme_title: "Read Me",
+    close_tool_readme_aria: "Close Read Me",
+    faq_title: "FAQ",
+    close_faq_aria: "Close FAQ",
+    faq_q1: "How do I start tracking a raid?",
+    faq_a1: 'Enter your Twitch channel name in the sidebar and click "Connect Chat". Once connected, raid messages will appear in the Chat tab and matching players will be added to the Board automatically.',
+    faq_q2: "Why aren't players showing up on the Board?",
+    faq_a2: 'Make sure you\'re connected to the correct channel and that chat messages follow the expected raid message format. You can also paste raid messages directly into the "Player Data" box and click "Add Players" to add them manually.',
+    faq_q3: "Can I set a boss type and dungeon level?",
+    faq_a3: 'Yes. Choose a boss from the dropdown (or enter a custom one), set the dungeon level, and click "Set" to display them at the top of the Board tab.',
+    faq_q4: 'What does "Export Board Text" do?',
+    faq_a4: "It collects roles, focuses, and skills currently shown on the Board so they can be translated or reviewed elsewhere. Found under Settings.",
+    faq_q5: "How do I clear everything and start over?",
+    faq_a5: 'Click "Disconnect" to leave the channel, then "Clear" to reset the chat log and Board.',
+    contacts_title: "Contacts",
+    close_contacts_aria: "Close Contacts",
+    contact_twitch: "Twitch",
+    contact_discord: "Discord",
     skill_placeholder_title: "Placeholder — waiting for full stats",
     skill_highlight_title: "Click to highlight red/green",
     name_highlight_title: "{name} — Click to highlight red/green"
@@ -112,7 +130,7 @@ const I18N = {
     header_role: "Rol",
     header_focus: "Objetivo",
     header_skills: "Habilidades",
-    footer_html: 'Consulta el "<a href="#" onclick="readMe(); return false;">Léeme</a>" para Derechos de Autor y Permisos.',
+    footer_html: '<a href="#" onclick="openToolReadme(); return false;">Léame</a> · <a href="#" onclick="readMe(); return false;">Derechos de Autor y Permisos</a> · <a href="#" onclick="openFaq(); return false;">Preguntas Frecuentes</a> · <a href="#" onclick="openContacts(); return false;">Contacto</a>',
     edit_player_title: "Editar jugador",
     remove_player_title: "Eliminar jugador",
     add_player_trigger: "Añadir Jugador",
@@ -132,6 +150,8 @@ const I18N = {
 
     readme_title: "Léeme",
     close_readme_aria: "Cerrar Léeme",
+    tool_readme_title: "Léeme",
+    close_tool_readme_aria: "Cerrar Léeme",
     skill_placeholder_title: "Marcador de posición — esperando estadísticas completas",
     skill_highlight_title: "Haz clic para resaltar en rojo/verde",
     name_highlight_title: "{name} — Haz clic para resaltar en rojo/verde"
@@ -177,7 +197,7 @@ const I18N = {
     header_role: "Rôle",
     header_focus: "Cible",
     header_skills: "Compétences",
-    footer_html: 'Consultez le "<a href="#" onclick="readMe(); return false;">Lisez-moi</a>" pour les droits d\'auteur et autorisations.',
+    footer_html: '<a href="#" onclick="openToolReadme(); return false;">Lisez-moi</a> · <a href="#" onclick="readMe(); return false;">Droits d\'auteur et autorisations</a> · <a href="#" onclick="openFaq(); return false;">FAQ</a> · <a href="#" onclick="openContacts(); return false;">Contacts</a>',
     edit_player_title: "Modifier le joueur",
     remove_player_title: "Supprimer le joueur",
     add_player_trigger: "Ajouter un Joueur",
@@ -197,6 +217,8 @@ const I18N = {
 
     readme_title: "Lisez-moi",
     close_readme_aria: "Fermer Lisez-moi",
+    tool_readme_title: "Lisez-moi",
+    close_tool_readme_aria: "Fermer Lisez-moi",
     skill_placeholder_title: "Espace réservé — en attente des stats complètes",
     skill_highlight_title: "Cliquez pour surligner en rouge/vert",
     name_highlight_title: "{name} — Cliquez pour surligner en rouge/vert"
@@ -242,7 +264,7 @@ const I18N = {
     header_role: "Rolle",
     header_focus: "Fokus",
     header_skills: "Fähigkeiten",
-    footer_html: 'Siehe "<a href="#" onclick="readMe(); return false;">Liesmich</a>" für Urheberrecht &amp; Berechtigungen.',
+    footer_html: '<a href="#" onclick="openToolReadme(); return false;">Liesmich</a> · <a href="#" onclick="readMe(); return false;">Urheberrecht &amp; Berechtigungen</a> · <a href="#" onclick="openFaq(); return false;">FAQ</a> · <a href="#" onclick="openContacts(); return false;">Kontakt</a>',
     edit_player_title: "Spieler bearbeiten",
     remove_player_title: "Spieler entfernen",
     add_player_trigger: "Spieler Hinzufügen",
@@ -262,6 +284,8 @@ const I18N = {
 
     readme_title: "Liesmich",
     close_readme_aria: "Liesmich schließen",
+    tool_readme_title: "Liesmich",
+    close_tool_readme_aria: "Liesmich schließen",
     skill_placeholder_title: "Platzhalter — wartet auf vollständige Werte",
     skill_highlight_title: "Klicken zum Markieren in Rot/Grün",
     name_highlight_title: "{name} — Klicken zum Markieren in Rot/Grün"
@@ -307,7 +331,7 @@ const I18N = {
     header_role: "役割",
     header_focus: "フォーカス",
     header_skills: "スキル",
-    footer_html: '著作権と使用許可については「<a href="#" onclick="readMe(); return false;">Read Me</a>」をご覧ください。',
+    footer_html: '<a href="#" onclick="openToolReadme(); return false;">Read Me</a>・<a href="#" onclick="readMe(); return false;">著作権と使用許可</a>・<a href="#" onclick="openFaq(); return false;">よくある質問</a>・<a href="#" onclick="openContacts(); return false;">連絡先</a>',
     edit_player_title: "プレイヤーを編集",
     remove_player_title: "プレイヤーを削除",
     add_player_trigger: "プレイヤーを追加",
@@ -327,6 +351,8 @@ const I18N = {
 
     readme_title: "Read Me",
     close_readme_aria: "Read Meを閉じる",
+    tool_readme_title: "Read Me",
+    close_tool_readme_aria: "Read Meを閉じる",
     skill_placeholder_title: "プレースホルダー — 完全なステータス待ち",
     skill_highlight_title: "クリックして赤/緑でハイライト",
     name_highlight_title: "{name} — クリックして赤/緑でハイライト"
@@ -1680,6 +1706,30 @@ function closeReadme() {
 
 function readMe() {
   openReadme();
+}
+
+function openFaq() {
+  document.getElementById("faqOverlay").classList.add("open");
+}
+
+function closeFaq() {
+  document.getElementById("faqOverlay").classList.remove("open");
+}
+
+function openToolReadme() {
+  document.getElementById("toolReadmeOverlay").classList.add("open");
+}
+
+function closeToolReadme() {
+  document.getElementById("toolReadmeOverlay").classList.remove("open");
+}
+
+function openContacts() {
+  document.getElementById("contactsOverlay").classList.add("open");
+}
+
+function closeContacts() {
+  document.getElementById("contactsOverlay").classList.remove("open");
 }
 
 function onBossTypeSelectChange() {
