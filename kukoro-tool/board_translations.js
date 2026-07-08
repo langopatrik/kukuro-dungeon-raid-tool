@@ -9,7 +9,7 @@
 // To add more known strings, just add more lines inside the backticks
 // below. Don't use a backtick (`) or a ${...} sequence inside a line, since
 // those have special meaning in a JS template string.
-const BOARD_TRANSLATIONS = `☀️ Paladín
+const BOARD_TRANSLATIONS = `
 🐗 Esquivar contra troll enemigo te curará
 🐗 Tu defensa cambiará a número de nivel de troll enemigo al que te enfrentes
 🐗 Daño x2 tras recibir un crítico de troll enemigo
@@ -72,6 +72,7 @@ const BOARD_TRANSLATIONS = `☀️ Paladín
 
 🗡️ Rogue
 🗡️ Pícaro
+☀️ Paladín
 
 cyclops
 troll
