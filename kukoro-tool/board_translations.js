@@ -12,15 +12,22 @@
 const BOARD_TRANSLATIONS = `☀️ Paladín
 🐗 Esquivar contra troll enemigo te curará
 🐗 Tu defensa cambiará a número de nivel de troll enemigo al que te enfrentes
+
 🐸 Level -1 all your team if you die by enemy goblin
 🐸 Your hits ignore the defense of enemy goblin
 🐸 Your hits ignore the defense of enemy goblin
 🐸 Decrease your team agility when you miss against enemy goblin
+🐸 X0.5 prob. de esquivar los ataques de goblin enemigo
+
 👁️ 100% chance of critical against enemy cyclops if you are the last player alive
 👁️ 66% chance of dodging enemy cyclops attacks when you are full hp
 👁️ X0.5 damage received by enemy cyclops when the current minute is odd
 👁️ Defeating enemy cyclops will invert the healthbar of a random teammate
 👁️ X4 chance of dodging enemy cyclops attacks when you are under 50% hp
+👁️ 100% chance of critical hit to enemy cyclops when you have odd health
+👁️ Kill enemy cyclops with one hit if you have 3hp or less
+👁️ You will run away from combat if you get under 20% hp in front of enemy cyclops
+
 👻 X0.5 damage received by enemy shadow when the current minute is odd
 👻 Defeating enemy shadow will invert the healthbar of a random teammate
 👻 Defeating enemy shadow will invert the healthbar of a random teammate
@@ -28,20 +35,44 @@ const BOARD_TRANSLATIONS = `☀️ Paladín
 👻 Distribute health to your teammates the same damage you received from enemy shadow
 👻 Slightly heals your team everytime you hit enemy shadow
 👻 Your level will become the same level of enemy shadow you fight
+
 👑 0% damage after hitting odd damage to any boss
 👑 Distribute health to your teammates the same damage you received from any boss
+
 🕷️ X0.5 chance of dodging enemy spider attacks
 🕷️ X0.75 enemy spider damage on you
+
+🐮 Dying by enemy minotaur will reverse all your teammates health
+🐮 Absorbe el 99% del daño de minotauro enemigo si tienes vida impar
+
+🧜 Devuelve los golpes críticos a naga enemigo
+🧜 Todo tu equipo recibirá nivel -1 si mueres por naga enemigo
+
+😈 100% de prob. de crítico a diablillo enemigo si no ha muerto ningún jugador
+😈 Escaparás del combate si recibes un golpe crítico de diablillo enemigo
+
+🛡️ 20% prob. de que tus golpes curen a enemigos más resistentes
+🛡️ X0.5 de daño recibido por enemigos más resistentes si el minuto es impar
+
 ⚡ Crit. hits deal x0.5 damage against more agile enemies
 ⚡ Your critical hits at more agile enemies will raise 2% the defense of your team
+
 🗡️ Rogue
+🗡️ Pícaro
+
 cyclops
-Mixed (Shadow, Goblin)
 troll
-Mixed (Goblin, Shadow)
 spider
-Mixed (Cyclops, Shadow)
 shadow
+diablillo
+naga
+Mixed (Goblin, Minotauro)
+Mixed (Shadow, Goblin)
+Mixed (Goblin, Shadow)
+Mixed (Cyclops, Shadow)
+Mixed (Cyclops, Minotaur)
+resistenses
+
 
 
 `;
