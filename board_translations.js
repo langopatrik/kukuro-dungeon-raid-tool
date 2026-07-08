@@ -17,6 +17,7 @@ const BOARD_TRANSLATIONS = `☀️ Paladín
 🐸 Your hits ignore the defense of enemy goblin
 🐸 Your hits ignore the defense of enemy goblin
 🐸 Decrease your team agility when you miss against enemy goblin
+🐸 X0.5 prob. de esquivar los ataques de goblin enemigo
 
 👁️ 100% chance of critical against enemy cyclops if you are the last player alive
 👁️ 66% chance of dodging enemy cyclops attacks when you are full hp
@@ -41,21 +42,37 @@ const BOARD_TRANSLATIONS = `☀️ Paladín
 🕷️ X0.5 chance of dodging enemy spider attacks
 🕷️ X0.75 enemy spider damage on you
 
+🐮 Dying by enemy minotaur will reverse all your teammates health
+🐮 Absorbe el 99% del daño de minotauro enemigo si tienes vida impar
+
+🧜 Devuelve los golpes críticos a naga enemigo
+🧜 Todo tu equipo recibirá nivel -1 si mueres por naga enemigo
+
+😈 100% de prob. de crítico a diablillo enemigo si no ha muerto ningún jugador
+😈 Escaparás del combate si recibes un golpe crítico de diablillo enemigo
+
+🛡️ 20% prob. de que tus golpes curen a enemigos más resistentes
+🛡️ X0.5 de daño recibido por enemigos más resistentes si el minuto es impar
+
 ⚡ Crit. hits deal x0.5 damage against more agile enemies
 ⚡ Your critical hits at more agile enemies will raise 2% the defense of your team
 
-🐮 Dying by enemy minotaur will reverse all your teammates health
-
 🗡️ Rogue
+🗡️ Pícaro
 
 cyclops
-Mixed (Shadow, Goblin)
 troll
-Mixed (Goblin, Shadow)
 spider
+shadow
+diablillo
+naga
+Mixed (Goblin, Minotauro)
+Mixed (Shadow, Goblin)
+Mixed (Goblin, Shadow)
 Mixed (Cyclops, Shadow)
 Mixed (Cyclops, Minotaur)
-shadow
+resistenses
+
 
 
 `;
