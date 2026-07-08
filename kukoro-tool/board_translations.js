@@ -20,9 +20,10 @@ const BOARD_TRANSLATIONS = `
 
 🐸 Level -1 all your team if you die by enemy goblin
 🐸 Your hits ignore the defense of enemy goblin
-🐸 Your hits ignore the defense of enemy goblin
 🐸 Decrease your team agility when you miss against enemy goblin
 🐸 X0.5 prob. de esquivar los ataques de goblin enemigo
+🐸 X0.5 damage received by enemy goblin when the current minute is odd
+🐸 Your defense will increase 10% each time you hit enemy goblin as long as you have full life
 
 👁️ 100% chance of critical against enemy cyclops if you are the last player alive
 👁️ 66% chance of dodging enemy cyclops attacks when you are full hp
@@ -71,6 +72,16 @@ const BOARD_TRANSLATIONS = `
 
 🦠 3% prob. de matar limo enemigo de un golpe
 🦠 Siempre harás crítico a limo enemigo si tienes menos del 50% de la vida
+🦠 Always crit. enemy slime when you are under 50% hp
+🦠 Your dodge percentage will 2x number of attacks you have exchanged with enemy slime in that fight
+
+🐺 Always dodge the first attack of enemy wolf
+🐺 Defeating enemy wolf will increase your defense 10%
+🐺 Dodge 90% of enemy wolf's hits when you have 10hp or less
+🐺 Kill enemy wolf with one hit if you have 3hp or less
+
+👹 50% chance of crit. hit against enemy oni
+👹 Your hits ignore the defense of enemy oni
 
 🔮 Baja 5 niveles a enemigos malditos antes de luchar
 🔮 Derrotar a enemigos malditos convertirá a las habilidades de un compañero al azar en superefectivas
@@ -95,6 +106,7 @@ const BOARD_TRANSLATIONS = `
 ☀️ Paladín
 🥀 Nigromante
 🛡️ Tank
+⚔️ Warrior
 
 Berserk
 minotaur
@@ -108,6 +120,10 @@ naga
 esqueleto
 limo
 clope
+goblin
+slime
+wolf
+oni
 Mixed (Esqueleto, Troll)
 Mixed (Goblin, Minotauro)
 Mixed (Shadow, Goblin)
