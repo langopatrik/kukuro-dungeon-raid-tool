@@ -459,6 +459,51 @@
     margin-bottom: 0;
   }
 
+  /* Read Me modal is longer-form than the other modals, so it gets its own
+     width and a scrollable body instead of the default fixed-height panel. */
+  #readmeOverlay .modal {
+    width: 520px;
+    max-width: 90vw;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .readme-body {
+    overflow-y: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-dim);
+  }
+
+  .readme-body h3 {
+    margin: 16px 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .readme-body h3:first-child {
+    margin-top: 0;
+  }
+
+  .readme-body p {
+    margin: 0 0 10px;
+  }
+
+  .readme-body code {
+    background: rgba(124,92,255,0.12);
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .readme-footnote {
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+    font-style: italic;
+  }
+
   select {
     display: block;
     width: 100%;

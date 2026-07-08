@@ -65,7 +65,8 @@ const I18N = {
     status_connected: "connected — #{channel}",
     status_dropped: "disconnected (connection dropped)",
 
-    readme_alert: "Kukoro Dungeon Raid Tool - Read Me placeholder",
+    readme_title: "Read Me",
+    close_readme_aria: "Close Read Me",
     skill_placeholder_title: "Placeholder — waiting for full stats",
     skill_highlight_title: "Click to highlight red/green",
     name_highlight_title: "{name} — Click to highlight red/green"
@@ -129,7 +130,8 @@ const I18N = {
     status_connected: "conectado — #{channel}",
     status_dropped: "desconectado (conexión perdida)",
 
-    readme_alert: "Herramienta Kukoro Dungeon Raid - Marcador de posición Léeme",
+    readme_title: "Léeme",
+    close_readme_aria: "Cerrar Léeme",
     skill_placeholder_title: "Marcador de posición — esperando estadísticas completas",
     skill_highlight_title: "Haz clic para resaltar en rojo/verde",
     name_highlight_title: "{name} — Haz clic para resaltar en rojo/verde"
@@ -193,7 +195,8 @@ const I18N = {
     status_connected: "connecté — #{channel}",
     status_dropped: "déconnecté (connexion perdue)",
 
-    readme_alert: "Outil Kukoro Dungeon Raid - Espace réservé Lisez-moi",
+    readme_title: "Lisez-moi",
+    close_readme_aria: "Fermer Lisez-moi",
     skill_placeholder_title: "Espace réservé — en attente des stats complètes",
     skill_highlight_title: "Cliquez pour surligner en rouge/vert",
     name_highlight_title: "{name} — Cliquez pour surligner en rouge/vert"
@@ -257,7 +260,8 @@ const I18N = {
     status_connected: "verbunden — #{channel}",
     status_dropped: "getrennt (Verbindung unterbrochen)",
 
-    readme_alert: "Kukoro Dungeon Raid Tool - Liesmich-Platzhalter",
+    readme_title: "Liesmich",
+    close_readme_aria: "Liesmich schließen",
     skill_placeholder_title: "Platzhalter — wartet auf vollständige Werte",
     skill_highlight_title: "Klicken zum Markieren in Rot/Grün",
     name_highlight_title: "{name} — Klicken zum Markieren in Rot/Grün"
@@ -321,7 +325,8 @@ const I18N = {
     status_connected: "接続済み — #{channel}",
     status_dropped: "切断（接続が失われました）",
 
-    readme_alert: "Kukoro ダンジョンレイドツール - Read Me（仮）",
+    readme_title: "Read Me",
+    close_readme_aria: "Read Meを閉じる",
     skill_placeholder_title: "プレースホルダー — 完全なステータス待ち",
     skill_highlight_title: "クリックして赤/緑でハイライト",
     name_highlight_title: "{name} — クリックして赤/緑でハイライト"
@@ -1665,8 +1670,16 @@ function toggleDarkMode() {
   localStorage.setItem("kukoro_theme", next);
 }
 
+function openReadme() {
+  document.getElementById("readmeOverlay").classList.add("open");
+}
+
+function closeReadme() {
+  document.getElementById("readmeOverlay").classList.remove("open");
+}
+
 function readMe() {
-  alert(t("readme_alert"));
+  openReadme();
 }
 
 function onBossTypeSelectChange() {

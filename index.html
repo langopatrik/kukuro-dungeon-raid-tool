@@ -182,6 +182,37 @@
   </div>
 </div>
 
+<!-- READ ME MODAL -->
+<div class="modal-overlay" id="readmeOverlay" onclick="if(event.target===this) closeReadme()">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 data-i18n="readme_title">Read Me</h2>
+      <button class="icon-btn" onclick="closeReadme()" aria-label="Close Read Me" data-i18n-aria="close_readme_aria">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="section readme-body">
+      <h3>Copyright &amp; Permissions</h3>
+      <p>Copyright &copy; 2026 the Kukoro Dungeon Raid Player Data Tool contributors.</p>
+      <p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+      <p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+      <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+
+      <h3>Not affiliated</h3>
+      <p>This is an unofficial, fan-made companion tool for organizing "Kukoro Dungeon Raid" community events on Twitch. It is not affiliated with, endorsed by, or sponsored by the creators of Kukoro Dungeon Raid, Twitch Interactive, Inc., or any related parties. All game names, trademarks, and in-game terminology referenced (boss names, skill text, etc.) belong to their respective owners and are used here only for identification and interoperability purposes.</p>
+
+      <h3>Third-party data</h3>
+      <p>Player-submitted chat messages parsed by this tool remain the property of the players who wrote them. This tool does not claim ownership over any in-game text, player names, or chat content it displays or processes.</p>
+
+      <p class="readme-footnote">For setup instructions, feature details, and information on customizing keyword matching or translations, see <code>README.md</code> in the project folder.</p>
+    </div>
+  </div>
+</div>
+
 <script src="patterns.js"></script>
 <script src="board_translations.js"></script>
 <script src="script.js"></script>
