@@ -788,17 +788,19 @@ function connect() {
         // extra trailing punctuation) would silently break.
         const focusMatch = cleaned.match(/^(\S+)\s+has switched focus to\s+([^.]+)\.?/i);
 
-        // Spanish-chat invasion announcement, e.g. "EMPIEZA LA INVASIÓN
-        // >>> ¡Vamos a tomar la mazmorra nivel 22!" — checked before the
+        // Invasion-start announcement — Spanish, "EMPIEZA LA INVASIÓN >>>
+        // ¡Vamos a tomar la mazmorra nivel 22!", or English, "RAID BEGINS
+        // >>> Let's take down dungeon level 17!" — checked before the
         // other branches since (like the focus-switch line) it has neither
         // "(" nor "[" and would otherwise fall through to "unrecognized".
-        const invasionMatch = cleaned.match(/EMPIEZA\s+LA\s+INVASI[OÓ]N.*?nivel\s+(\d+)/i);
+        const invasionMatch = cleaned.match(/(?:EMPIEZA\s+LA\s+INVASI[OÓ]N.*?nivel|RAID\s+BEGINS.*?level)\s+(\d+)/i);
 
-        // Matching end-of-invasion announcement, e.g. "FIN DE LA INVASIÓN
-        // >>> DAMR66, DRAKEVIELLX y SHHQD suben de nivel para las
-        // siguientes mazmorras." The named players aren't parsed out —
-        // the message alone just signals the raid is over.
-        const invasionEndMatch = cleaned.match(/FIN\s+DE\s+LA\s+INVASI[OÓ]N/i);
+        // Matching end-of-invasion announcement — Spanish, "FIN DE LA
+        // INVASIÓN >>> DAMR66, DRAKEVIELLX y SHHQD suben de nivel para las
+        // siguientes mazmorras.", or English, "RAID IS OVER >>> DAMR66
+        // leveled up for the next raids." The named players aren't parsed
+        // out — the message alone just signals the raid is over.
+        const invasionEndMatch = cleaned.match(/FIN\s+DE\s+LA\s+INVASI[OÓ]N|RAID\s+IS\s+OVER/i);
 
         if (invasionMatch) {
           handleInvasionStart(invasionMatch[1]);
@@ -1165,6 +1167,7 @@ function disconnect() {
 
 // Handles an "invasion start" announcement, e.g.
 // "[KUKORO] EMPIEZA LA INVASIÓN >>> ¡Vamos a tomar la mazmorra nivel 22!"
+// or "[KUKORO] RAID BEGINS >>> Let's take down dungeon level 17!"
 // Just updates the dungeon level shown — the board and boss type are left
 // alone (they get cleared separately when the invasion ends, not when the
 // next one starts).
@@ -1175,7 +1178,8 @@ function handleInvasionStart(level) {
 
 // Handles an "invasion end" announcement, e.g.
 // "[KUKORO] FIN DE LA INVASIÓN >>> DAMR66, DRAKEVIELLX y SHHQD suben de
-// nivel para las siguientes mazmorras." The specific players named don't
+// nivel para las siguientes mazmorras." or "[KUKORO] RAID IS OVER >>>
+// DAMR66 leveled up for the next raids." The specific players named don't
 // matter here — the message itself just means the raid is over, so the
 // board, boss type, and dungeon level all get cleared out for the next one.
 function handleInvasionEnd() {
@@ -1238,12 +1242,13 @@ function addPlayersFromTextarea() {
     // through to the bare-name branch below (which wipes skills/focus).
     const focusMatch = cleaned.match(/^(\S+)\s+has switched focus to\s+([^.]+)\.?/i);
 
-    // Same invasion-announcement check as the live listener, so pasting
-    // one of these lines behaves identically to hearing it live.
-    const invasionMatch = cleaned.match(/EMPIEZA\s+LA\s+INVASI[OÓ]N.*?nivel\s+(\d+)/i);
+    // Same invasion-announcement check as the live listener (Spanish or
+    // English), so pasting one of these lines behaves identically to
+    // hearing it live.
+    const invasionMatch = cleaned.match(/(?:EMPIEZA\s+LA\s+INVASI[OÓ]N.*?nivel|RAID\s+BEGINS.*?level)\s+(\d+)/i);
 
     // Same end-of-invasion check as the live listener.
-    const invasionEndMatch = cleaned.match(/FIN\s+DE\s+LA\s+INVASI[OÓ]N/i);
+    const invasionEndMatch = cleaned.match(/FIN\s+DE\s+LA\s+INVASI[OÓ]N|RAID\s+IS\s+OVER/i);
 
     if (invasionMatch) {
       handleInvasionStart(invasionMatch[1]);
