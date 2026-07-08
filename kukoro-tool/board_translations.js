@@ -17,6 +17,12 @@ const BOARD_TRANSLATIONS = `
 🐗 Recibe nivel +2 cuando fallas contra troll enemigo
 🐗 Todo tu equipo recibirá nivel +3 si mueres por troll enemigo
 🐗 Tus críticos a troll enemigo subirán 2% la defensa a tu equipo
+🐗 -33% de vida antes de luchar contra troll enemigo
+🐗 Baja 5 niveles a troll enemigo antes de luchar
+🐗 Recupera la vida antes de morir por troll enemigo a costa de absorber la vida de un compañero aleatorio
+🐗 Siempre harás crítico a troll enemigo si tienes menos del 50% de la vida
+🐗 Troll enemigo tiene 1% de probabilidad de matarte de un solo golpe
+🐗 X0.5 de daño recibido por troll enemigo si el minuto es impar
 
 🐸 Level -1 all your team if you die by enemy goblin
 🐸 Your hits ignore the defense of enemy goblin
@@ -53,11 +59,29 @@ const BOARD_TRANSLATIONS = `
 
 🕷️ X0.5 chance of dodging enemy spider attacks
 🕷️ X0.75 enemy spider damage on you
+🕷️ 20% prob. de que tus golpes curen a araña enemigo
+🕷️ 50% prob. de golpe crítico a araña enemigo
+🕷️ Daño x0.7 a araña enemigo
+🕷️ Escaparás del combate si tienes menos del 20% de vida frente a araña enemigo
+🕷️ Esquivar frente a araña enemigo subirá 2% la defensa al equipo
+🕷️ Morir por araña enemigo también matará al enemigo
+🕷️ Todo tu equipo recibirá nivel -1 si mueres por araña enemigo
+🕷️ Todo tu equipo recibirá nivel +3 si mueres por araña enemigo
+🕷️ Tu defensa frente a araña enemigo será del 100% mientras nunca hayas recibido daño
+🕷️ Un aliado aleatorio recibirá los golpes que falles contra araña enemigo
 
 🐮 Dying by enemy minotaur will reverse all your teammates health
 🐮 Absorbe el 99% del daño de minotauro enemigo si tienes vida impar
 🐮 Damage x3 against enemy minotaur if you are the last player alive
 🐮 Your defense against enemy minotaur will be 100% as long as you have 10hp or less
+🐮 50% prob. de golpe crítico a minotauro enemigo
+🐮 66% prob. de esquivar los ataques de minotauro enemigo si tienes la vida completa
+🐮 Daño x3 a minotauro enemigo que haya matado a un compañero
+🐮 Derrotar a minotauro enemigo duplicará la defensa de un compañero aleatorio
+🐮 Los críticos de minotauro enemigo te hacen x2 de daño
+🐮 Minotauro enemigo tiene 1% de probabilidad de matarte de un solo golpe
+🐮 Reduce a 0 la agilidad de minotauro enemigo
+🐮 Tu defensa frente a minotauro enemigo será del 100% mientras tengas 10hp o menos
 
 🧜 Devuelve los golpes críticos a naga enemigo
 🧜 Todo tu equipo recibirá nivel -1 si mueres por naga enemigo
@@ -86,6 +110,15 @@ const BOARD_TRANSLATIONS = `
 👹 Defeating enemy Wolf will increase your defense 10%
 👹 Dodge 90% of enemy oni's hits when you have 10hp or less
 👹 Dodge 90% of enemy Wolf's hits when you have 10hp or less
+
+😈 0% de daño a diablillo enemigo tras asestar un golpe de daño impar
+😈 100% de prob. de crítico a diablillo enemigo si eres el último jugador vivo
+😈 Absorbe el 99% del daño de diablillo enemigo si tienes vida impar
+😈 Defensa del 66% frente a diablillo enemigo si no ha muerto ningún compañero
+😈 El 66% del daño recibido por diablillo enemigo se reflejará a tu equipo
+😈 Morir por diablillo enemigo reasignará los enemigos a los que afectan las habilidades de tu equipo
+😈 Reduce a 0 la agilidad de diablillo enemigo
+😈 Tu porcentaje de esquiva 2x como ataques hayas intercambiado con diablillo enemigo en ese combate
 
 👣 Dying by humanoid enemies also kills the opponent
 👣 Your defense will increase 10% each time you hit humanoid enemies as long as you have full life
@@ -133,12 +166,19 @@ slime
 wolf
 oni
 humanoid
+araña
+minotauro
 Mixed (Esqueleto, Troll)
 Mixed (Goblin, Minotauro)
 Mixed (Shadow, Goblin)
 Mixed (Goblin, Shadow)
 Mixed (Cyclops, Shadow)
 Mixed (Cyclops, Minotaur)
+Mixed (Araña, Diablillo)
+Mixed (Araña, Troll)
+Mixed (Diablillo, Minotauro)
+Mixed (Diablillo, Troll)
+Mixed (Minotauro, Troll)
 resistenses
 
 
