@@ -12,6 +12,10 @@
 const BOARD_TRANSLATIONS = `☀️ Paladín
 🐗 Esquivar contra troll enemigo te curará
 🐗 Tu defensa cambiará a número de nivel de troll enemigo al que te enfrentes
+🐗 Daño x2 tras recibir un crítico de troll enemigo
+🐗 Esquivar contra troll enemigo aumentará tu probabilidad de crítico
+🐗 Recibe nivel +2 cuando fallas contra troll enemigo
+🐗 Todo tu equipo recibirá nivel +3 si mueres por troll enemigo
 
 🐸 Level -1 all your team if you die by enemy goblin
 🐸 Your hits ignore the defense of enemy goblin
@@ -48,6 +52,15 @@ const BOARD_TRANSLATIONS = `☀️ Paladín
 🧜 Devuelve los golpes críticos a naga enemigo
 🧜 Todo tu equipo recibirá nivel -1 si mueres por naga enemigo
 
+💀 0% prob. de golpe crítico a esqueleto enemigo
+💀 Daño x3 a esqueleto enemigo si tienes toda la vida
+
+🦠 3% prob. de matar limo enemigo de un golpe
+🦠 Siempre harás crítico a limo enemigo si tienes menos del 50% de la vida
+
+🐾 Tus críticos a enemigos bestias subirán 3% tu defensa
+🐾 X0.5 prob. de esquivar los ataques de enemigos bestias
+
 😈 100% de prob. de crítico a diablillo enemigo si no ha muerto ningún jugador
 😈 Escaparás del combate si recibes un golpe crítico de diablillo enemigo
 
@@ -66,6 +79,8 @@ spider
 shadow
 diablillo
 naga
+esqueleto
+limo
 Mixed (Goblin, Minotauro)
 Mixed (Shadow, Goblin)
 Mixed (Goblin, Shadow)
