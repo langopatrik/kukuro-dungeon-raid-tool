@@ -19,6 +19,7 @@ const I18N = {
     theme_btn_to_dark: "Switch to Dark Mode",
     board_text_log_label: "Board Text (for translation)",
     export_board_text_btn: "Export Board Text",
+    import_no_new_alert: "No new board text to export — everything in the log is already in board_translations.js.",
     language_label: "Language",
     toggle_sidebar_title: "Toggle sidebar",
     close_settings_aria: "Close settings",
@@ -82,6 +83,7 @@ const I18N = {
     theme_btn_to_dark: "Cambiar a Modo Oscuro",
     board_text_log_label: "Texto del Tablero (para traducción)",
     export_board_text_btn: "Exportar Texto del Tablero",
+    import_no_new_alert: "No hay texto nuevo del tablero para exportar — todo en el registro ya está en board_translations.js.",
     language_label: "Idioma",
     toggle_sidebar_title: "Mostrar/ocultar barra lateral",
     close_settings_aria: "Cerrar configuración",
@@ -145,6 +147,7 @@ const I18N = {
     theme_btn_to_dark: "Passer au Mode Sombre",
     board_text_log_label: "Texte du Tableau (pour traduction)",
     export_board_text_btn: "Exporter le Texte du Tableau",
+    import_no_new_alert: "Aucun nouveau texte du tableau à exporter — tout est déjà dans board_translations.js.",
     language_label: "Langue",
     toggle_sidebar_title: "Afficher/masquer la barre latérale",
     close_settings_aria: "Fermer les paramètres",
@@ -208,6 +211,7 @@ const I18N = {
     theme_btn_to_dark: "Zu Dunklem Modus wechseln",
     board_text_log_label: "Board-Text (für Übersetzung)",
     export_board_text_btn: "Board-Text Exportieren",
+    import_no_new_alert: "Kein neuer Board-Text zum Exportieren — alles im Protokoll ist bereits in board_translations.js.",
     language_label: "Sprache",
     toggle_sidebar_title: "Seitenleiste ein-/ausblenden",
     close_settings_aria: "Einstellungen schließen",
@@ -271,6 +275,7 @@ const I18N = {
     theme_btn_to_dark: "ダークモードに切り替え",
     board_text_log_label: "ボードのテキスト（翻訳用）",
     export_board_text_btn: "ボードのテキストを書き出す",
+    import_no_new_alert: "書き出す新しいボードテキストはありません — ログ内のすべてが board_translations.js に含まれています。",
     language_label: "言語",
     toggle_sidebar_title: "サイドバーの表示切替",
     close_settings_aria: "設定を閉じる",
@@ -380,47 +385,27 @@ let connectionState = { status: "disconnected", channel: "" };
 // The board displays free-text pulled from raid chat (role, focus, and
 // skill descriptions) that isn't covered by the UI's I18N dictionary above.
 // Rather than translating on the fly, we collect every distinct string that
-// actually reaches the board into a deduped set, persisted so it survives
-// reloads, and exportable as a plain text file — hand that file to a
-// translator once, then a later pass can turn the results into a lookup
-// table the same way the UI strings already work.
+// actually reaches the board (this session) into a deduped set, exportable
+// as a plain text file — hand that file to a translator, who folds the
+// results into board_translations.js as the single source of truth for
+// what's already known.
 // Deliberately NOT wired into the chat log: chat stays untranslated, always.
-const BOARD_TEXT_LOG_KEY = "kukoro_board_text_log";
 
-function loadBoardTextLog() {
-  try {
-    const raw = localStorage.getItem(BOARD_TEXT_LOG_KEY);
-    if (raw) return new Set(JSON.parse(raw));
-  } catch (e) { /* corrupt/missing — start fresh */ }
-  return new Set();
-}
+// Every distinct role/focus/skill string seen on the board so far this
+// session. Intentionally NOT persisted anywhere — board_translations.js is
+// the only record of what's already known; this is just what's currently
+// on screen, so it's fine (and simpler) for it to reset on every reload.
+let boardTextLog = new Set();
 
-let boardTextLog = loadBoardTextLog();
-
-const BOARD_TEXT_EXPORTED_KEY = "kukoro_board_text_log_exported";
-
-function loadExportedBoardTextLog() {
-  try {
-    const raw = localStorage.getItem(BOARD_TEXT_EXPORTED_KEY);
-    if (raw) return new Set(JSON.parse(raw));
-  } catch (e) { /* corrupt/missing — nothing exported yet as far as we know */ }
-  return new Set();
-}
-
-// Snapshot of board text that was already included in a past export, so we
-// can tell "new since last download" apart from "already sent to the
-// translator" without needing a server round-trip.
-let exportedBoardTextLog = loadExportedBoardTextLog();
-
-function persistExportedBoardTextLog() {
-  try {
-    localStorage.setItem(BOARD_TEXT_EXPORTED_KEY, JSON.stringify(Array.from(exportedBoardTextLog)));
-  } catch (e) { /* storage unavailable/full */ }
-}
+// The set of strings board_translations.js already knows about, parsed
+// once from BOARD_TRANSLATIONS on load (see loadBoardTranslationsFile
+// below). A string only counts as "pending" if it's NOT in this set —
+// there's no other notion of "already exported" to track.
+let knownBoardTranslations = new Set();
 
 function getPendingBoardTextCount() {
   let pending = 0;
-  boardTextLog.forEach(str => { if (!exportedBoardTextLog.has(str)) pending++; });
+  boardTextLog.forEach(str => { if (!knownBoardTranslations.has(str)) pending++; });
   return pending;
 }
 
@@ -587,12 +572,6 @@ function updateTranslationBadge() {
 }
 
 
-function persistBoardTextLog() {
-  try {
-    localStorage.setItem(BOARD_TEXT_LOG_KEY, JSON.stringify(Array.from(boardTextLog)));
-  } catch (e) { /* storage unavailable/full — logging just won't persist */ }
-}
-
 // Only strings a translator would actually need to touch are worth logging:
 // skip empty/placeholder cells and skip anything with no letters at all
 // (plain numbers, the "—" placeholder, bare emoji/icons), since those never
@@ -606,16 +585,27 @@ function logBoardText(str) {
   if (!HAS_LETTERS_RE.test(trimmed)) return;
   if (boardTextLog.has(trimmed)) return;
   boardTextLog.add(trimmed);
-  persistBoardTextLog();
   updateTranslationBadge();
 }
 
-// Triggers a browser download of every board string collected so far, one
-// per line and alphabetically sorted so a translator can work through it as
-// a flat list. Available from the console as exportBoardTextLog(), and from
-// the small "Export Board Text" button in Settings.
+// Triggers a browser download of every board string collected so far this
+// session that ISN'T already in board_translations.js, one per line and
+// alphabetically sorted so a translator can work through it as a flat list.
+// Available from the console as exportBoardTextLog(), and from the small
+// "Export Board Text" button in Settings.
+// board_translations.js is the only source of "already known" — there's no
+// separate "already exported" tracking, so a string keeps showing up here
+// on every export until it's actually added to that file.
 function exportBoardTextLog() {
-  const lines = Array.from(boardTextLog).sort((a, b) => a.localeCompare(b));
+  const lines = Array.from(boardTextLog)
+    .filter(str => !knownBoardTranslations.has(str))
+    .sort((a, b) => a.localeCompare(b));
+
+  if (lines.length === 0) {
+    alert(t("import_no_new_alert"));
+    return;
+  }
+
   const blob = new Blob([lines.join("\n") + "\n"], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -625,11 +615,19 @@ function exportBoardTextLog() {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+}
 
-  // Everything just downloaded counts as "seen by the translator" — clear
-  // the pending count until new board text shows up after this point.
-  exportedBoardTextLog = new Set(boardTextLog);
-  persistExportedBoardTextLog();
+// board_translations.js declares BOARD_TRANSLATIONS (see that file),
+// hand-maintained by whoever is doing the translation work — one board
+// string per line. Loaded via a plain <script> tag rather than fetched, so
+// (unlike fetch()) it works even when index.html is opened directly from
+// disk instead of served over http(s). This is the ONLY source of "already
+// known" strings — nothing is persisted in localStorage. Matching is by
+// exact line content, same as how entries are logged.
+function loadBoardTranslationsFile() {
+  if (typeof BOARD_TRANSLATIONS !== "string") return; // board_translations.js missing — nothing known yet
+  const lines = BOARD_TRANSLATIONS.split(/\r\n|\r|\n/).map(l => l.trim()).filter(l => l.length > 0);
+  knownBoardTranslations = new Set(lines);
   updateTranslationBadge();
 }
 
@@ -1813,10 +1811,10 @@ if (languageSelect) languageSelect.value = currentLang;
 const savedTheme = localStorage.getItem("kukoro_theme") || "dark";
 applyTheme(savedTheme);
 
-// Reflect however much board text has piled up since the last export,
-// in case the page was reloaded (or reopened days later) with a pending
-// count already sitting in localStorage.
-updateTranslationBadge();
+// Pull in whatever's currently in board_translations.js so strings the
+// translator has already handled don't show up as pending again. (This
+// also updates the translation badge internally.)
+loadBoardTranslationsFile();
 
 // Reflect whatever notifications (translation-related or otherwise)
 // already persisted from a previous visit.
