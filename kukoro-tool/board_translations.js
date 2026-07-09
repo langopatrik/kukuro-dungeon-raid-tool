@@ -15,6 +15,8 @@ const BOARD_TRANSLATIONS = `
 🐗 Heal x2 the damage taken by enemy troll to a random teammate
 🐗 You will run away from combat if enemy troll deals a critical hit on you
 🐗 Your defense will increase 10% each time you hit enemy troll as long as you have full life
+🐗 +1% agility to the whole team after dodging enemy troll attacks
+🐗 Crit. hits against enemy troll will increase your base damage
 
 🐗 Esquivar contra troll enemigo te curará
 🐗 Tu defensa cambiará a número de nivel de troll enemigo al que te enfrentes
@@ -129,6 +131,10 @@ const BOARD_TRANSLATIONS = `
 🐮 Dying by enemy minotaur will reverse all your teammates health
 🐮 Damage x3 against enemy minotaur if you are the last player alive
 🐮 Your defense against enemy minotaur will be 100% as long as you have 10hp or less
+🐮 Absorb 99% enemy minotaur damage when you have odd hp
+🐮 Damage x3 against enemy minotaur if you are full health
+🐮 Defense of 66% against enemy minotaur if no teammate has been killed
+🐮 X4 chance of dodging enemy minotaur attacks when you are under 50% hp
 
 🐮 Absorbe el 99% del daño de minotauro enemigo si tienes vida impar
 🐮 50% prob. de golpe crítico a minotauro enemigo
@@ -175,6 +181,9 @@ const BOARD_TRANSLATIONS = `
 💀 Exchange enemy skeleton's health with yours before starting the fight
 💀 Permanently cancels enemy skeleton critical hit probability
 💀 Your critical hits to enemy skeleton will raise 3% your defense
+💀 50% chance to kill enemy skeleton with one hit if you have 10hp or less
+💀 Always crit. enemy skeleton when you are over 50% hp
+💀 Always dodge the first attack of enemy skeleton
 
 💀 0% prob. de golpe crítico a esqueleto enemigo
 💀 Daño x3 a esqueleto enemigo si tienes toda la vida
@@ -206,6 +215,7 @@ const BOARD_TRANSLATIONS = `
 🦠 Damage x3 against enemy slime that killed a teammate
 🦠 Dodge vs enemy slime will raise 2% defense to the team
 🦠 Enemy slime crit. hits deal x2 damage on you
+🦠 50% chance of crit. hit against enemy slime
 
 🦠 3% prob. de matar limo enemigo de un golpe
 🦠 Siempre harás crítico a limo enemigo si tienes menos del 50% de la vida
@@ -226,6 +236,11 @@ const BOARD_TRANSLATIONS = `
 🐺 Kill enemy wolf with one hit if you have 3hp or less
 🐺 Defeating enemy wolf will turn a random teammate abilities into supereffective
 🐺 Your dodge percentage will 2x number of attacks you have exchanged with enemy wolf in that fight
+🐺 -33% hp before fighting against enemy wolf
+🐺 +1% agility to the whole team after dodging enemy wolf attacks
+🐺 Always crit. enemy wolf when you are over 50% hp
+🐺 Dodging against enemy wolf will heal you
+🐺 X4 chance of dodging enemy wolf attacks when you are under 50% hp
 
 🐺 100% de prob. de crítico a lobo enemigo si tienes vida impar
 🐺 Defenderás el doble mientras tengas poca vida frente a lobo enemigo
@@ -405,6 +420,8 @@ const BOARD_TRANSLATIONS = `
 🐾 Morir por enemigos bestias restaurará la vida completa al enemigo
 
 👑 Your critical hits at any boss will raise 2% the defense of your team
+👑 Damage x3 against any boss that killed a teammate
+👑 X1.25 any boss damage on you
 
 👑 +66% de vida antes de luchar contra cualquier jefe
 👑 Tu defensa frente a cualquier jefe será del 100% mientras tengas 10hp o menos
@@ -535,6 +552,8 @@ Mixed (Minotauro, Orco)
 Mixed (Oni, Troll)
 Mixed (Orco, Troll)
 Mixed (Slime, Troll)
+Mixed (Minotaur, Skeleton)
+Mixed (Slime, Wolf)
 
 
 
