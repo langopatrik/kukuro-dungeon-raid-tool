@@ -113,9 +113,7 @@ const BOARD_TRANSLATIONS = `
 👹 50% chance of crit. hit against enemy oni
 👹 Your hits ignore the defense of enemy oni
 👹 Defeating enemy oni will increase your defense 10%
-👹 Defeating enemy Wolf will increase your defense 10%
 👹 Dodge 90% of enemy oni's hits when you have 10hp or less
-👹 Dodge 90% of enemy Wolf's hits when you have 10hp or less
 
 😈 0% de daño a diablillo enemigo tras asestar un golpe de daño impar
 😈 100% de prob. de crítico a diablillo enemigo si eres el último jugador vivo
