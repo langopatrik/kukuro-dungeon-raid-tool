@@ -74,6 +74,7 @@ const FOCUS_TRANSLATIONS = [
   { en: "cursed", es: "malditos" },
   { en: "gargoyle", es: "gárgola" },
   { en: "lizard", es: "lizardo" },
+  { en: "human", es: "humano" },
   { en: "boss", es: "jefe" },
   { en: "tougher", es: "resistentes" },
 ];
