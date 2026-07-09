@@ -49,7 +49,6 @@ const BOARD_TRANSLATIONS = `
 
 👻 X0.5 damage received by enemy shadow when the current minute is odd
 👻 Defeating enemy shadow will invert the healthbar of a random teammate
-👻 Defeating enemy shadow will invert the healthbar of a random teammate
 👻 50% chance to kill enemy shadow with one hit if you have 10hp or less
 👻 Distribute health to your teammates the same damage you received from enemy shadow
 👻 Slightly heals your team everytime you hit enemy shadow
