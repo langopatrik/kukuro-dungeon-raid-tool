@@ -5,6 +5,9 @@
 // translation), this file is the real English<->Spanish dictionary used to
 // TRANSLATE what's shown on the board: roles, focus/creature names, and
 // skill descriptions.
+// The creator of the entries is spanish, so the english side wording can 
+// be weird. Never change the wording, because it needs to match the board 
+// exactly for the translation to work.
 //
 // HOW IT WORKS
 // Each entry below is a pair: the same role/focus/skill written once in
