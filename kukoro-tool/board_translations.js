@@ -23,6 +23,11 @@ const BOARD_TRANSLATIONS = `
 🐗 Siempre harás crítico a troll enemigo si tienes menos del 50% de la vida
 🐗 Troll enemigo tiene 1% de probabilidad de matarte de un solo golpe
 🐗 X0.5 de daño recibido por troll enemigo si el minuto es impar
+🐗 Escaparás del combate si recibes un golpe crítico de troll enemigo
+🐗 Troll enemigo al que te enfrentes cambiará al mismo nivel que tú
+🐗 Tu defensa aumentará 10% cada vez que golpees a troll enemigo mientras tengas toda la vida
+🐗 X0.75 de daño recibido por troll enemigo
+🐗 X1.25 de daño recibido por troll enemigo
 
 🐸 Level -1 all your team if you die by enemy goblin
 🐸 Your hits ignore the defense of enemy goblin
@@ -62,6 +67,12 @@ const BOARD_TRANSLATIONS = `
 👁️ Intercambia la vida de cíclope enemigo con la tuya cuando empiezas el combate
 👁️ Morir por cíclope enemigo curará -50% la vida restante de tu equipo
 👁️ Reduce la agilidad de tu equipo cuando fallas contra cíclope enemigo
+👁️ Cíclope enemigo tiene x2 prob. de esquivar tus ataques
+👁️ Derrotar a cíclope enemigo te recuperará el 66% de vida
+👁️ Siempre harás crítico a cíclope enemigo si tienes más del 50% de la vida
+👁️ Tu defensa frente a cíclope enemigo será del 100% mientras nunca hayas recibido daño
+👁️ Tu porcentaje de esquiva 2x como ataques hayas intercambiado con cíclope enemigo en ese combate
+👁️ X2 prob. de esquivar los ataques de cíclope enemigo
 
 👻 X0.5 damage received by enemy shadow when the current minute is odd
 👻 Defeating enemy shadow will invert the healthbar of a random teammate
@@ -113,6 +124,14 @@ const BOARD_TRANSLATIONS = `
 🐮 Minotauro enemigo tiene 1% de probabilidad de matarte de un solo golpe
 🐮 Reduce a 0 la agilidad de minotauro enemigo
 🐮 Tu defensa frente a minotauro enemigo será del 100% mientras tengas 10hp o menos
+🐮 -33% de vida antes de luchar contra minotauro enemigo
+🐮 0% de daño a minotauro enemigo tras asestar un golpe de daño impar
+🐮 3% prob. de matar minotauro enemigo de un golpe
+🐮 Daño x2 a minotauro enemigo tras asestarle un golpe de daño impar
+🐮 Defensa del 66% frente a minotauro enemigo que haya matado a un compañero
+🐮 Escaparás del combate si tienes menos del 20% de vida frente a minotauro enemigo
+🐮 X0.5 de daño recibido por minotauro enemigo cuando tienes más del 50% de la vida
+🐮 X4 prob. de esquivar los ataques de minotauro enemigo si tienes menos del 50% de la vida
 
 🧜 X0.5 damage received by enemy naga when the current minute is odd
 🧜 You will defend twice as much while you have low health against enemy naga
@@ -139,6 +158,20 @@ const BOARD_TRANSLATIONS = `
 💀 Morir por esqueleto enemigo invertirá la vida a todos tus compañeros
 💀 Daño x5 a esqueleto enemigo si nunca has recibido daño
 💀 Esquiva el 90% de los golpes de esqueleto enemigo si tienes 10hp o menos
+💀 +66% de vida antes de luchar contra esqueleto enemigo
+💀 100% de prob. de crítico a esqueleto enemigo si eres el último jugador vivo
+💀 Defensa del 66% frente a esqueleto enemigo si no ha muerto ningún compañero
+💀 Derrotar a esqueleto enemigo te recuperará el 66% de vida
+💀 Escaparás del combate si tienes menos del 20% de vida frente a esqueleto enemigo
+💀 Esquiva a esqueleto enemigo siempre que él te esquive
+💀 Fallar contra esqueleto enemigo bloqueará su próximo ataque
+💀 Los críticos a esqueleto enemigo aumentarán tu daño base
+💀 Morir por esqueleto enemigo restaurará la vida completa al enemigo
+💀 Recibe nivel +2 cuando fallas contra esqueleto enemigo
+💀 Siempre harás crítico a esqueleto enemigo si tienes más del 50% de la vida
+💀 Un aliado aleatorio recibirá los golpes que falles contra esqueleto enemigo
+💀 X0.5 prob. de esquivar los ataques de esqueleto enemigo
+💀 X0.75 de daño recibido por esqueleto enemigo
 
 🦠 Always crit. enemy slime when you are under 50% hp
 🦠 Your dodge percentage will 2x number of attacks you have exchanged with enemy slime in that fight
@@ -167,6 +200,13 @@ const BOARD_TRANSLATIONS = `
 🐺 Escaparás del combate si tienes menos del 20% de vida frente a lobo enemigo
 🐺 Morir por lobo enemigo reestablecerá las habilidades de tus compañeros
 🐺 Todo tu equipo recibirá nivel -1 si mueres por lobo enemigo
+🐺 +1% de agilidad a todo el equipo tras esquivar a lobo enemigo
+🐺 +66% de vida antes de luchar contra lobo enemigo
+🐺 Daño x3 a lobo enemigo si eres el último jugador vivo
+🐺 Morir por lobo enemigo invertirá la vida a todos tus compañeros
+🐺 Morir por lobo enemigo restaurará la vida completa al enemigo
+🐺 Tu barra de vida se invertirá tras derrotar a lobo enemigo
+🐺 X4 prob. de esquivar los ataques de lobo enemigo si tienes menos del 50% de la vida
 
 👹 50% chance of crit. hit against enemy oni
 👹 Your hits ignore the defense of enemy oni
@@ -177,6 +217,21 @@ const BOARD_TRANSLATIONS = `
 👹 Derrotar a oni enemigo te recuperará el 66% de vida
 👹 Escaparás del combate si recibes un golpe crítico de oni enemigo
 👹 X0.5 de daño recibido por oni enemigo cuando tienes más del 50% de la vida
+👹 -33% de vida antes de luchar contra oni enemigo
+👹 0% prob. de golpe crítico a oni enemigo
+👹 50% prob. de golpe crítico a oni enemigo
+👹 60% de prob. de esquivar a oni enemigo si eres el último jugador vivo
+👹 Defensa del 66% frente a oni enemigo que haya matado a un compañero
+👹 Derrotar a oni enemigo cambiará tus habilidades
+👹 Devuelve los golpes críticos a oni enemigo
+👹 Esquivar contra oni enemigo curará a tu equipo
+👹 Los críticos a oni enemigo aumentarán tu agilidad
+👹 Morir por oni enemigo curará -50% la vida restante de tu equipo
+👹 Morir por oni enemigo curará +66% la vida restante de tu equipo
+👹 Morir por oni enemigo también matará al enemigo
+👹 Recibe nivel +2 cuando fallas contra oni enemigo
+👹 Tus críticos a oni enemigo subirán 2% la defensa a tu equipo
+👹 Un aliado aleatorio recibirá los golpes que falles contra oni enemigo
 
 😈 0% de daño a diablillo enemigo tras asestar un golpe de daño impar
 😈 100% de prob. de crítico a diablillo enemigo si eres el último jugador vivo
@@ -212,6 +267,10 @@ const BOARD_TRANSLATIONS = `
 😈 Tus golpes ignoran la defensa de diablillo enemigo
 😈 Un aliado aleatorio recibirá los golpes que falles contra diablillo enemigo
 😈 Tu defensa aumentará 1% cada vez que golpees a diablillo enemigo
+😈 20% prob. de que tus golpes curen a diablillo enemigo
+😈 Siempre harás crítico a diablillo enemigo si tienes menos del 50% de la vida
+😈 Tu nivel se igualará a cualquier diablillo enemigo que luches
+😈 Tus críticos harán x0.5 de daño a diablillo enemigo
 
 🐲 100% de prob. de crítico a dragón enemigo si eres el último jugador vivo
 🐲 66% prob. de esquivar los ataques de dragón enemigo si tienes la vida completa
@@ -243,6 +302,10 @@ const BOARD_TRANSLATIONS = `
 
 👣 3% prob. de matar enemigos humanoides de un golpe
 👣 El 66% del daño recibido por enemigos humanoides se reflejará a tu equipo
+👣 +66% de vida antes de luchar contra enemigos humanoides
+👣 100% de prob. de crítico a enemigos humanoides si tienes vida impar
+👣 Cura ligeramente a tu equipo cuando golpeas a enemigos humanoides
+👣 Daño x0.7 a enemigos humanoides
 
 🔮 Baja 5 niveles a enemigos malditos antes de luchar
 🔮 Derrotar a enemigos malditos convertirá a las habilidades de un compañero al azar en superefectivas
@@ -250,13 +313,57 @@ const BOARD_TRANSLATIONS = `
 🦁 100% chance of critical against enemy orc if you are the last player alive
 🦁 Crit. hits deal x3 damage against enemy orc
 
+🦁 20% prob. de que tus golpes curen a orco enemigo
+🦁 Anula permanentemente la probabilidad de hacer críticos de orco enemigo
+🦁 Atacar primero contra orco enemigo hará x3 daño
+🦁 Cura a tus compañeros el daño recibido por orco enemigo de forma equivalente
+🦁 Daño x0.7 a orco enemigo
+🦁 Daño x3 a orco enemigo si no ha muerto ningún jugador
+🦁 Daño x3 a orco enemigo si tienes toda la vida
+🦁 Derrotar a orco enemigo duplicará la defensa de un compañero aleatorio
+🦁 Derrotar a orco enemigo te subirá nivel +3
+🦁 Desvía el 200% del daño recibido por orco enemigo a un compañero al azar
+🦁 Devuelve los golpes críticos a orco enemigo
+🦁 Esquivar contra orco enemigo aumentará tu probabilidad de crítico
+🦁 Esquivar frente a orco enemigo subirá 4% tu defensa
+🦁 Intercambia la vida de orco enemigo con la tuya cuando empiezas el combate
+🦁 Los críticos de orco enemigo te hacen x2 de daño
+🦁 Morir por orco enemigo invertirá la vida a todos tus compañeros
+🦁 Orco enemigo tiene x2 prob. de esquivar tus ataques
+🦁 Recibe nivel -2 cuando fallas contra orco enemigo
+🦁 Reduce a 0 la agilidad de orco enemigo
+🦁 Reduce la agilidad de tu equipo cuando fallas contra orco enemigo
+🦁 Tu defensa aumentará 10% cada vez que golpees a orco enemigo mientras tengas toda la vida
+🦁 Un aliado aleatorio recibirá los golpes que falles contra orco enemigo
+🦁 X0.5 prob. de esquivar los ataques de orco enemigo
+🦁 X2 prob. de esquivar los ataques de orco enemigo
+
+🦇 -33% de vida antes de luchar contra murciélago enemigo
+🦇 Derrotar a murciélago enemigo convertirá a las habilidades de un compañero al azar en superefectivas
+🦇 El 66% del daño recibido por murciélago enemigo se reflejará a tu equipo
+🦇 Esquivar contra murciélago enemigo curará a tu equipo
+🦇 Morir por murciélago enemigo reestablecerá las habilidades de tus compañeros
+🦇 Morir por murciélago enemigo restaurará la vida completa al enemigo
+🦇 No puedes fallar contra murciélago enemigo
+🦇 Recibe nivel +2 cuando fallas contra murciélago enemigo
+🦇 Reduce la agilidad de tu equipo cuando fallas contra murciélago enemigo
+🦇 Resiste los golpes mortales de murciélago enemigo si tienes más de 1 de vida
+🦇 Tu defensa frente a murciélago enemigo será del 100% mientras nunca hayas recibido daño
+🦇 Tus críticos harán x0.5 de daño a murciélago enemigo
+🦇 X0.5 de daño recibido por murciélago enemigo cuando tienes menos del 50% de la vida
+🦇 X0.5 de daño recibido por murciélago enemigo si el minuto es impar
+
 🐾 Tus críticos a enemigos bestias subirán 3% tu defensa
 🐾 X0.5 prob. de esquivar los ataques de enemigos bestias
 🐾 Daño x2 tras recibir un crítico de enemigos bestias
 🐾 Tu barra de vida se invertirá tras derrotar a enemigos bestias
+🐾 Defensa del 66% frente a enemigos bestias que haya matado a un compañero
+🐾 Morir por enemigos bestias restaurará la vida completa al enemigo
 
 👑 +66% de vida antes de luchar contra cualquier jefe
 👑 Tu defensa frente a cualquier jefe será del 100% mientras tengas 10hp o menos
+👑 Tu defensa cambiará a número de nivel de cualquier jefe al que te enfrentes
+👑 X0.5 prob. de esquivar los ataques de cualquier jefe
 
 🛡️ 20% prob. de que tus golpes curen a enemigos más resistentes
 🛡️ X0.5 de daño recibido por enemigos más resistentes si el minuto es impar
@@ -270,12 +377,22 @@ const BOARD_TRANSLATIONS = `
 🛡️ El 66% del daño recibido por enemigos más resistentes se reflejará a tu equipo
 🛡️ Esquivar contra enemigos más resistentes aumentará tu probabilidad de crítico
 🛡️ Morir por enemigos más resistentes matará a un compañero al azar
+🛡️ Fallar contra enemigos más resistentes bloqueará su próximo ataque
+🛡️ Resiste los golpes mortales de enemigos más resistentes si tienes más de 1 de vida
+🛡️ Tu porcentaje de esquiva 2x como ataques hayas intercambiado con enemigos más resistentes en ese combate
 
 ⚡ Crit. hits deal x0.5 damage against more agile enemies
 ⚡ Your critical hits at more agile enemies will raise 2% the defense of your team
 
 ⚡ Daño x2 a enemigos más ágiles cuando el minuto es par
 ⚡ Morir por enemigos más ágiles restaurará la vida completa al enemigo
+⚡ Esquiva el 90% de los golpes de enemigos más ágiles si tienes 10hp o menos
+⚡ Esquivar frente a enemigos más ágiles subirá 4% tu defensa
+⚡ Reduce la agilidad de tu equipo cuando fallas contra enemigos más ágiles
+⚡ Tu porcentaje de esquiva 2x como ataques hayas intercambiado con enemigos más ágiles en ese combate
+
+⭐ 100% de prob. de crítico a cualquier enemigo si no ha muerto ningún jugador
+⭐ El 66% del daño recibido por cualquier enemigo se reflejará a tu equipo
 
 🗡️ Rogue
 🗡️ Pícaro
@@ -325,6 +442,10 @@ tougher
 resistenses
 boss
 jefe
+bat
+murciélago
+any
+cualquier
 Mixed (Esqueleto, Troll)
 Mixed (Goblin, Minotauro)
 Mixed (Shadow, Goblin)
@@ -350,6 +471,18 @@ Mixed (Diablillo, Sombra)
 Mixed (Goblin, Lobo)
 Mixed (Goblin, Zombi)
 Mixed (Limo, Rgola)
+Mixed (Cíclope, Orco)
+Mixed (Con, Contra)
+Mixed (Diablillo, Oni)
+Mixed (Esqueleto, Minotauro)
+Mixed (Esqueleto, Orco)
+Mixed (Lago, Lobo)
+Mixed (Lago, Minotauro)
+Mixed (Lago, Orco)
+Mixed (Lobo, Orco)
+Mixed (Minotauro, Orco)
+Mixed (Oni, Troll)
+Mixed (Orco, Troll)
 
 
 
