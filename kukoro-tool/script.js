@@ -881,17 +881,17 @@ function parseZeatriseMessage(rawText) {
 
   // Everything up to the first colored circle marker is the stats block
   // (e.g. "🛡️15% 💥15% ⚡️10%"); the skills start at the first marker.
-  const firstMarkerIndex = rest.search(/[🟡🟢🔴]/u);
+  const firstMarkerIndex = rest.search(/[🟡🟢🔴🔵]/u);
   const stats = (firstMarkerIndex === -1 ? rest : rest.slice(0, firstMarkerIndex)).trim();
   const skillsText = firstMarkerIndex === -1 ? "" : rest.slice(firstMarkerIndex);
 
   // Each skill is a colored circle followed by its description, running up
   // to the next circle (or the end of the message). The marker sets the
   // skill's highlight directly: 🟡 neutral/white, 🟢 positive/green,
-  // 🔴 lost/negative-red.
-  const skills = [...skillsText.matchAll(/([🟡🟢🔴])\s*([^🟡🟢🔴]*)/gu)].map(m => {
+  // 🔴 lost/negative-red, 🔵 special ability/blue.
+  const skills = [...skillsText.matchAll(/([🟡🟢🔴🔵])\s*([^🟡🟢🔴🔵]*)/gu)].map(m => {
     const marker = m[1];
-    const highlight = marker === "🟢" ? "green" : marker === "🔴" ? "red" : "none";
+    const highlight = marker === "🟢" ? "green" : marker === "🔴" ? "red" : marker === "🔵" ? "blue" : "none";
     return { text: m[2].trim(), highlight };
   });
 
@@ -1474,7 +1474,7 @@ function renderBoard() {
           const isFocusPlaceholder = /^focusing enemy \S+$/i.test(s.text.trim());
           const highlightClass = isFocusPlaceholder
             ? " skill-yellow"
-            : s.highlight === "red" ? " skill-red" : s.highlight === "green" ? " skill-green" : "";
+            : s.highlight === "red" ? " skill-red" : s.highlight === "green" ? " skill-green" : s.highlight === "blue" ? " skill-blue" : "";
           const title = isFocusPlaceholder ? t("skill_placeholder_title") : t("skill_highlight_title");
           if (!isFocusPlaceholder) logBoardText(s.text);
           const displaySkillText = isFocusPlaceholder ? s.text : translateBoardString(s.text, currentLang);

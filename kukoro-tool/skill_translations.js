@@ -72,7 +72,7 @@ const FOCUS_TRANSLATIONS = [
   { en: "dragon", es: "dragón" },
   { en: "zombie", es: "zombi" },
   { en: "cursed", es: "malditos" },
-  { en: "humanoid", es: "humanoides" },
+  { en: "gargoyle", es: "gárgola" },
   { en: "boss", es: "jefe" },
   { en: "tougher", es: "resistentes" },
 ];

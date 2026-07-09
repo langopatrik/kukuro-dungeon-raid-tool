@@ -835,6 +835,15 @@
     background: rgba(224,195,65,0.22);
   }
 
+  .player-row .player-skills .skill-item.skill-blue {
+    color: #4da3ff;
+    background: rgba(77,163,255,0.12);
+  }
+
+  .player-row .player-skills .skill-item.skill-blue:hover {
+    background: rgba(77,163,255,0.2);
+  }
+
   .add-row-trigger {
     display: flex;
     align-items: center;
