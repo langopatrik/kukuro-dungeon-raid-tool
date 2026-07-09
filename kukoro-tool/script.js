@@ -434,9 +434,23 @@ let boardTextLog = new Set();
 // there's no other notion of "already exported" to track.
 let knownBoardTranslations = new Set();
 
+// Some bots (e.g. KUKORO's own messages) prefix skill/role/focus text with
+// a leading enemy-type emoji; others (e.g. Zeatrise) send the exact same
+// text with no emoji at all. board_translations.js is hand-maintained and
+// may have been written down with or without that prefix. If "known"
+// matching were done on the raw string, a skill logged without its emoji
+// would never match a known entry that has one (or vice versa), and every
+// skill would look new even though it's already translated. So "known"
+// status is always checked on the emoji-stripped form of both sides — see
+// splitLeadingEmoji below, which is also what powers the actual on-board
+// translation lookup.
+function isKnownBoardText(str) {
+  return knownBoardTranslations.has(splitLeadingEmoji(String(str).trim()).rest.trim());
+}
+
 function getPendingBoardTextCount() {
   let pending = 0;
-  boardTextLog.forEach(str => { if (!knownBoardTranslations.has(str)) pending++; });
+  boardTextLog.forEach(str => { if (!isKnownBoardText(str)) pending++; });
   return pending;
 }
 
@@ -629,7 +643,7 @@ function logBoardText(str) {
 // on every export until it's actually added to that file.
 function exportBoardTextLog() {
   const lines = Array.from(boardTextLog)
-    .filter(str => !knownBoardTranslations.has(str))
+    .filter(str => !isKnownBoardText(str))
     .sort((a, b) => a.localeCompare(b));
 
   if (lines.length === 0) {
@@ -654,11 +668,12 @@ function exportBoardTextLog() {
 // (unlike fetch()) it works even when index.html is opened directly from
 // disk instead of served over http(s). This is the ONLY source of "already
 // known" strings — nothing is persisted in localStorage. Matching is by
-// exact line content, same as how entries are logged.
+// exact line content (after stripping any leading enemy-type emoji — see
+// isKnownBoardText above), same as how entries are logged.
 function loadBoardTranslationsFile() {
   if (typeof BOARD_TRANSLATIONS !== "string") return; // board_translations.js missing — nothing known yet
   const lines = BOARD_TRANSLATIONS.split(/\r\n|\r|\n/).map(l => l.trim()).filter(l => l.length > 0);
-  knownBoardTranslations = new Set(lines);
+  knownBoardTranslations = new Set(lines.map(l => splitLeadingEmoji(l).rest.trim()));
   updateTranslationBadge();
 }
 
