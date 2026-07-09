@@ -10,6 +10,12 @@
 // below. Don't use a backtick (`) or a ${...} sequence inside a line, since
 // those have special meaning in a JS template string.
 const BOARD_TRANSLATIONS = `
+🐗 Crit. hits against enemy troll will heal you
+🐗 Decrease enemy troll level by 5 before starting the fight
+🐗 Heal x2 the damage taken by enemy troll to a random teammate
+🐗 You will run away from combat if enemy troll deals a critical hit on you
+🐗 Your defense will increase 10% each time you hit enemy troll as long as you have full life
+
 🐗 Esquivar contra troll enemigo te curará
 🐗 Tu defensa cambiará a número de nivel de troll enemigo al que te enfrentes
 🐗 Daño x2 tras recibir un crítico de troll enemigo
@@ -56,6 +62,10 @@ const BOARD_TRANSLATIONS = `
 👁️ You will run away from combat if you get under 20% hp in front of enemy cyclops
 👁️ Damage x5 against enemy cyclops if you have never been damaged
 👁️ Dodge 90% of enemy cyclops's hits when you have 10hp or less
+👁️ Attacking first against enemy cyclops will deal x3 damage
+👁️ You will run away from combat if enemy cyclops deals a critical hit on you
+👁️ Your defense will increase 10% each time you hit enemy cyclops as long as you have full life
+👁️ Your level will become the same level of enemy cyclops you fight
 
 👁️ 0% de daño a cíclope enemigo tras asestar un golpe de daño impar
 👁️ 100% de prob. de crítico a cíclope enemigo si eres el último jugador vivo
@@ -80,6 +90,8 @@ const BOARD_TRANSLATIONS = `
 👻 Distribute health to your teammates the same damage you received from enemy shadow
 👻 Slightly heals your team everytime you hit enemy shadow
 👻 Your level will become the same level of enemy shadow you fight
+👻 100% chance of critical against enemy shadow if you are the last player alive
+👻 Reduces the enemy shadow’s agility to 0
 
 👻 Daño x1.5 a sombra enemigo
 👻 Derrotar a sombra enemigo invertirá la vida de un compañero aleatorio
@@ -151,6 +163,13 @@ const BOARD_TRANSLATIONS = `
 🧜 Reduce a 0 la defensa de naga enemigo al que te enfrentes
 🧜 X0.75 de daño recibido por naga enemigo
 
+💀 100% chance of critical hit to enemy skeleton when you have odd health
+💀 Attacking first against enemy skeleton will deal x3 damage
+💀 Damage x2 against enemy skeleton when you are high hp
+💀 Exchange enemy skeleton's health with yours before starting the fight
+💀 Permanently cancels enemy skeleton critical hit probability
+💀 Your critical hits to enemy skeleton will raise 3% your defense
+
 💀 0% prob. de golpe crítico a esqueleto enemigo
 💀 Daño x3 a esqueleto enemigo si tienes toda la vida
 💀 Anula permanentemente la probabilidad de hacer críticos de esqueleto enemigo
@@ -175,6 +194,12 @@ const BOARD_TRANSLATIONS = `
 
 🦠 Always crit. enemy slime when you are under 50% hp
 🦠 Your dodge percentage will 2x number of attacks you have exchanged with enemy slime in that fight
+🦠 66% chance of dodging enemy slime attacks when you are full hp
+🦠 Always dodge the first attack of enemy slime
+🦠 Come back critical hits to enemy slime
+🦠 Damage x3 against enemy slime that killed a teammate
+🦠 Dodge vs enemy slime will raise 2% defense to the team
+🦠 Enemy slime crit. hits deal x2 damage on you
 
 🦠 3% prob. de matar limo enemigo de un golpe
 🦠 Siempre harás crítico a limo enemigo si tienes menos del 50% de la vida
@@ -193,6 +218,8 @@ const BOARD_TRANSLATIONS = `
 🐺 Defeating enemy wolf will increase your defense 10%
 🐺 Dodge 90% of enemy wolf's hits when you have 10hp or less
 🐺 Kill enemy wolf with one hit if you have 3hp or less
+🐺 Defeating enemy wolf will turn a random teammate abilities into supereffective
+🐺 Your dodge percentage will 2x number of attacks you have exchanged with enemy wolf in that fight
 
 🐺 100% de prob. de crítico a lobo enemigo si tienes vida impar
 🐺 Defenderás el doble mientras tengas poca vida frente a lobo enemigo
@@ -360,6 +387,8 @@ const BOARD_TRANSLATIONS = `
 🐾 Defensa del 66% frente a enemigos bestias que haya matado a un compañero
 🐾 Morir por enemigos bestias restaurará la vida completa al enemigo
 
+👑 Your critical hits at any boss will raise 2% the defense of your team
+
 👑 +66% de vida antes de luchar contra cualquier jefe
 👑 Tu defensa frente a cualquier jefe será del 100% mientras tengas 10hp o menos
 👑 Tu defensa cambiará a número de nivel de cualquier jefe al que te enfrentes
@@ -390,6 +419,9 @@ const BOARD_TRANSLATIONS = `
 ⚡ Esquivar frente a enemigos más ágiles subirá 4% tu defensa
 ⚡ Reduce la agilidad de tu equipo cuando fallas contra enemigos más ágiles
 ⚡ Tu porcentaje de esquiva 2x como ataques hayas intercambiado con enemigos más ágiles en ese combate
+
+⭐ Defeating any enemy will increase your defense 10%
+⭐ Your defense will change to the number of any enemy level you face
 
 ⭐ 100% de prob. de crítico a cualquier enemigo si no ha muerto ningún jugador
 ⭐ El 66% del daño recibido por cualquier enemigo se reflejará a tu equipo
@@ -483,6 +515,7 @@ Mixed (Lobo, Orco)
 Mixed (Minotauro, Orco)
 Mixed (Oni, Troll)
 Mixed (Orco, Troll)
+Mixed (Slime, Troll)
 
 
 
